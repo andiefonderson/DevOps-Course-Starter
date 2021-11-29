@@ -10,9 +10,18 @@
   <div class="row">
     <div class="col-md-12">
       <h2>Items</h2>
-      <ul class="list-group mb-4">
-        <!-- List the todo items here -->
-      </ul>
+      {% for item in to_do_items %}
+      <ul class="list-group mb-4">{{item.status}} - {{item.title}}  <a href="/{{ item.id }}">Edit</a></ul>
+      {% endfor %}
+    </div>
+    <div class="col-md-12">
+      <h2>Add To To-Do List</h2>
+      <form id="add-to-do" method="post">
+        <p>Would you like to add an item to the to-do list?</p>
+        <label for="to-do-title">To do so, please enter the name of the task: </label><br><input type="text" name="to-do-title" required>
+        <br><br>
+        <input name="submit-task" type="submit">
+      </form>
     </div>
   </div>
 {% endblock %}
