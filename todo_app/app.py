@@ -10,6 +10,7 @@ app.config.from_object(Config())
 @app.route('/')
 def index():    
     list = get_items()
+    print(list)
     return render_template("index.html", to_do_items=list)
 
 @app.route('/', methods=['POST'])
@@ -26,7 +27,8 @@ def view_to_do_item(id):
 def amend_item(id):
     amended_status = request.form.get('task-status')
     amended_title = request.form.get('task-title')
-    task = { 'id': int(id), 'status': amended_status, 'title': amended_title }
+    amended_notes = request.form.get('task-notes')
+    task = { 'id': int(id), 'status': amended_status, 'title': amended_title, 'notes': amended_notes }
     save_item(task)
     return redirect('/')
 

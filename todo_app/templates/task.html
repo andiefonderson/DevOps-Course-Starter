@@ -6,6 +6,7 @@
     <h1 class="display-4">Task</h1>
     <h2>{{task.title}}</h2>
     <p><b>Current status: </b> {{task.status}}</p>
+    <p>Notes: {{ task.notes }}</p>
 </div>
 
 <br>
@@ -19,12 +20,21 @@
         </div>
         <div class="form-group">
             <label for="task-status">Current Status: </label>
-            <input type="text" name="task-status" class="form-control" value="{{task.status}}">
-            <small class="form-text text-muted">Please only input 'Not Started', 'In Progress', or 'Complete'</small><br>
-        </div>                
-        <input name="submit-amend-task" type="submit" class="btn btn-info">
+                <select name="task-status" class="form-control">
+                   <option value="Not Started">Not Started</option>
+                   <option value="In Progress">In Progress</option>
+                   <option value="Complete">Complete</option>
+                </select><br>
+        </div>     
+        <div class="form-group">
+            <label for="task-notes"><b>Notes: </b> </label>
+            <textarea name="task-notes" class="form-control"></textarea>
+        </div>           
+        <input name="submit-amend-task" type="submit" class="btn btn-success">
     </form>
     <br>
-    <button ><a href="/">Return to Homepage</a></button>
+    <a href="/"></a>
+        <button class="btn btn-info">Return to Homepage</button>
+    </a>
 </div>
 {% endblock %}

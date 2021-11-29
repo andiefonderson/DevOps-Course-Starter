@@ -7,14 +7,17 @@
     <p class="lead">Just another to-do app.</p>
   </div>
 
-  <div class="row">
-    <div class="col-md-12">
-      <h2>Items</h2>
-      {% for item in to_do_items %}
-      <ul class="list-group mb-4">{{item.status}} - {{item.title}}  <a href="/task/{{ item.id }}">View</a></ul>
-      {% endfor %}
-    </div>
+  {% for item in to_do_items %}
+  <div class="list-group">
+    <a href="/task/{{ item.id }}" class="list-group-item list-group-item-action">
+      <div class="d-flex w-100 justify-content-between">
+        <h5 class="mb-1">{{ item.title }}</h5>
+        <small class="text-muted">{{ item.status }}</small>        
+      </div>
+      <p class="mb-1">{{ item.notes }}</p>
+    </a>
   </div>
+  {% endfor %}
 
   <div class="col-md-12">
     <h2>Add To To-Do List</h2>
