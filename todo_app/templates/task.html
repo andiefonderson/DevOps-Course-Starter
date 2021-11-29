@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+{% block title %}To-Do App{% endblock %}
+
+{% block content %}
+<div class="col-md-12">
+    <h1 class="display-4">Task</h1>
+    <h2>{{task.title}}</h2>
+    <p><b>Current status: </b> {{task.status}}</p>
+</div>
+
+<br>
+
+<div class="col-md-12">
+    <form id="edit-task" method="post">
+        <h2>Edit the task here:</h2>
+        <div class="form-group">
+            <label for="task-title">Task Title: </label>
+            <input type="text" name="task-title" class="form-control" value="{{task.title}}">
+        </div>
+        <div class="form-group">
+            <label for="task-status">Current Status: </label>
+            <input type="text" name="task-status" class="form-control" value="{{task.status}}">
+            <small class="form-text text-muted">Please only input 'Not Started', 'In Progress', or 'Complete'</small><br>
+        </div>                
+        <input name="submit-amend-task" type="submit" class="btn btn-info">
+    </form>
+    <br>
+    <button ><a href="/">Return to Homepage</a></button>
+</div>
+{% endblock %}

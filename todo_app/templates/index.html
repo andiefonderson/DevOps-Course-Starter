@@ -11,17 +11,22 @@
     <div class="col-md-12">
       <h2>Items</h2>
       {% for item in to_do_items %}
-      <ul class="list-group mb-4">{{item.status}} - {{item.title}}  <a href="/{{ item.id }}">Edit</a></ul>
+      <ul class="list-group mb-4">{{item.status}} - {{item.title}}  <a href="/task/{{ item.id }}">View</a></ul>
       {% endfor %}
     </div>
-    <div class="col-md-12">
-      <h2>Add To To-Do List</h2>
-      <form id="add-to-do" method="post">
-        <p>Would you like to add an item to the to-do list?</p>
-        <label for="to-do-title">To do so, please enter the name of the task: </label><br><input type="text" name="to-do-title" required>
-        <br><br>
-        <input name="submit-task" type="submit">
-      </form>
-    </div>
+  </div>
+
+  <div class="col-md-12">
+    <h2>Add To To-Do List</h2>
+    <form id="add-to-do" method="post">
+      <p>Would you like to add an item to the to-do list?</p>
+      <div class="form-group">
+        <label for="to-do-title">To do so, please enter the name of the task: </label>
+        <input type="text" name="to-do-title" class="form-control" required>
+      </div>      
+      <div class="form-group">
+        <input name="submit-task" type="submit" class="btn btn-info">
+      </div>      
+    </form>
   </div>
 {% endblock %}

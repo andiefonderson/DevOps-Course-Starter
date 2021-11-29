@@ -67,3 +67,11 @@ def save_item(item):
     session['items'] = updated_items
 
     return item
+
+def delete_item(item):
+    existing_items = get_items()
+    if(existing_items.__contains__(item)):
+        existing_items.remove(item)
+    
+    return existing_items
+    
