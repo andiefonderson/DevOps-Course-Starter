@@ -9,13 +9,12 @@ app.config.from_object(Config())
 
 @app.route('/')
 def index():    
-    list = get_items()
-    print(list)
+    list = sorted(get_items(), key=lambda item:item['status'], reverse=True)
     return render_template("index.html", to_do_items=list)
 
 @app.route('/', methods=['POST'])
 def add_to_do():
-    add_item(request.form.get('to-do-title'))
+    add_item(request.form.get('to-do-title'), request.form.get('to-do-notes'))
     return redirect('/')
 
 @app.route('/task/<id>')
@@ -32,3 +31,14 @@ def amend_item(id):
     save_item(task)
     return redirect('/')
 
+@app.route('/delete/<id>')
+def view_delete_item(id):
+    task = get_item(id)
+    return render_template("deletetask.html", task=task)
+
+@app.route('/delete/<id>', methods=['POST'])
+def delete_task(id):
+    if request.form.get('delete-task-button'):
+        delete_item(id)
+
+    return redirect('/')

@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+{% block title %}To-Do App{% endblock %}
+
+{% block content %}
+<div class="text-center">
+    <div class="modal-header">
+        <h2 class="modal-title" id="delete-warning-title">Are you sure you want to delete this task?</h2>
+    </div>
+    <div class="card text-center">
+        <div class="card-header">
+            <h5 class="card-title">{{ task.title }} </h5>
+        </div>
+        <div class="card-body">    
+            <p class="card-text">
+                {% if task.notes == "" %}
+                <i>No notes added to this task.</i>
+                {% else %}
+                {{ task.notes }}
+                {% endif %}
+            </p>    
+        </div>
+        <div class="card-footer text-muted"><em>{{ task. status }}</em></div>
+    </div>
+    <div class="col py-sm-3">
+        <p>Once it's deleted, it can't be restored again!</p>
+        <form id="delete-task" class="form-group" method="post">
+            <button class="btn btn-danger" name="delete-task-button" value="delete-task-button">Delete</button> 
+            <button class="btn btn-secondary" name="back-to-task" value="back-to-task">Cancel</button>                    
+        </form>
+    </div> 
+</div>
+
+{% endblock %}
