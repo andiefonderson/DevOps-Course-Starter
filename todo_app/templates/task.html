@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+{% block title %}To-Do App{% endblock %}
+
+{% block content %}
+<div class="col-md-12">
+    <h1 class="display-4">Task</h1>
+    <span></span>
+    <h2>{{task.title}}</h2>
+    <p><b>Current status: </b> {{task.status}}</p>
+    <p><b>Notes: </b>{{ task.notes }}</p>
+    <button class="btn btn-success" data-toggle="collapse" data-target="#edit-task-form" aria-expanded="false" aria-controls="edit-task-form">Edit</button>
+    <a href="/delete/{{task.id}}" class="btn btn-danger" role="button" aria-pressed="true">Delete</a>    
+    <a href="/" class="btn btn-info" role="button" aria-pressed="true">Back</a>
+</div>
+
+<div class="collapse" id="edit-task-form">
+    <div class="card card-body">
+        <form id="edit-task" method="post">
+            <h2>Edit the task here:</h2>
+            <div class="form-group">
+                <label for="task-title">Task Title: </label>
+                <input type="text" name="task-title" class="form-control" value="{{task.title}}">
+            </div>
+            <div class="form-group">
+                <label for="task-status">Current Status: </label>
+                    <select name="task-status" class="form-control">
+                       <option value="Not Started">Not Started</option>
+                       <option value="In Progress">In Progress</option>
+                       <option value="Complete">Complete</option>
+                    </select><br>
+            </div>     
+            <div class="form-group">
+                <label for="task-notes"><b>Notes: </b></label>
+                <textarea name="task-notes" class="form-control">{{ task.notes }}</textarea>
+            </div>           
+            <input name="submit-amend-task" type="submit" class="btn btn-success">
+        </form>
+        <br>
+    </div>
+</div>
+{% endblock %}

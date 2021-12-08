@@ -1,8 +1,8 @@
 from flask import session
 
 _DEFAULT_ITEMS = [
-    { 'id': 1, 'status': 'Not Started', 'title': 'List saved todo items' },
-    { 'id': 2, 'status': 'Not Started', 'title': 'Allow new items to be added' }
+    { 'id': 1, 'status': 'Not Started', 'title': 'List saved todo items', 'notes': 'Maybe add notes to them too!' },
+    { 'id': 2, 'status': 'Not Started', 'title': 'Allow new items to be added', 'notes': 'Allow the user to add notes if they want to' }
 ]
 
 
@@ -13,6 +13,7 @@ def get_items():
     Returns:
         list: The list of saved items.
     """
+
     return session.get('items', _DEFAULT_ITEMS.copy())
 
 
@@ -30,7 +31,7 @@ def get_item(id):
     return next((item for item in items if item['id'] == int(id)), None)
 
 
-def add_item(title):
+def add_item(title, notes):
     """
     Adds a new item with the specified title to the session.
 
@@ -45,7 +46,7 @@ def add_item(title):
     # Determine the ID for the item based on that of the previously added item
     id = items[-1]['id'] + 1 if items else 0
 
-    item = { 'id': id, 'title': title, 'status': 'Not Started' }
+    item = { 'id': id, 'title': title, 'status': 'Not Started', 'notes': notes }
 
     # Add the item to the list
     items.append(item)
@@ -67,3 +68,14 @@ def save_item(item):
     session['items'] = updated_items
 
     return item
+
+def delete_item(id):
+    
+    existing_items = get_items()
+    item = get_item(id)
+    
+    existing_items.remove(item)
+
+    session['items'] = existing_items
+
+    return updated_items
