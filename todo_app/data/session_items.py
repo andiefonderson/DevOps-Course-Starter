@@ -75,7 +75,6 @@ def delete_item(id):
     item = get_item(id)
     
     existing_items.remove(item)
-    
     session['items'] = existing_items
 
     return existing_items
