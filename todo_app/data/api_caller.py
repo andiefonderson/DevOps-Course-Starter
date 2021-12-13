@@ -8,17 +8,18 @@ board_id = os.getenv('TRELLO_BOARD_ID')
 
 def get_tasks():
     api_url = 'https://api.trello.com/1/boards/' + board_id + '/lists/'
-    auth_string = {"key":api_key, 
-        "token":api_token, 
-        "fields":"name", 
-        "cards":"all", 
-        "card_fields":"name"}
+    auth_string = {'key':api_key, 
+        'token':api_token, 
+        'fields':'name', 
+        'cards':'all', 
+        'card_fields':'name,desc'}
     response = requests.get(api_url, params=auth_string)
     list_cards = json.loads(response.text)
+    todo_list = []
     for list in list_cards:
-        print("Status: " + list['name'])
         for card in list['cards']:
-            print("Task: " + card['name'])
+            task = { 'id': card['id'], 'title': card['name'], 'status': list['name'], 'notes': card['desc']}
+            todo_list.append(task)
 
-
+    print(todo_list)
 get_tasks()
