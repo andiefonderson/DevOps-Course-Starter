@@ -1,7 +1,7 @@
 from flask import Flask, render_template, redirect, request
 
 from todo_app.data.session_items import *
-from todo_app.data.api_caller import get_task, get_tasks
+from todo_app.data.api_caller import *
 from todo_app.flask_config import Config
 
 app = Flask(__name__)
@@ -16,7 +16,8 @@ def index():
 
 @app.route('/', methods=['POST'])
 def add_to_do():
-    add_item(request.form.get('to-do-title'), request.form.get('to-do-notes'))
+    # add_item(request.form.get('to-do-title'), request.form.get('to-do-notes'))
+    create_task(request.form.get('to-do-title'), request.form.get('to-do-notes'))
     return redirect('/')
 
 @app.route('/task/<id>')
