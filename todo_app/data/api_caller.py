@@ -8,16 +8,15 @@ api_token = os.getenv('TRELLO_TOKEN')
 board_id = os.getenv('TRELLO_BOARD_ID')
 not_started_listid = os.getenv('NOT_STARTED_LIST_ID')
 in_progress_listid = os.getenv('IN_PROGRESS_LIST_ID')
-completed_listid = os.getenv('COMPLETED_LIST_ID')
+complete_listid = os.getenv('COMPLETE_LIST_ID')
 
 def get_tasks():
-    api_url = 'https://api.trello.com/1/boards/' + board_id + '/lists/'
     api_params = {"key":api_key, 
         "token":api_token, 
         "fields":"name", 
         "cards":"all", 
         "card_fields":"name,desc,closed"}
-    response = requests.get(api_url, params=api_params)
+    response = requests.get(api_url('list'), params=api_params)
     list_cards = json.loads(response.text)
     
     todo_tasks = []
@@ -39,12 +38,39 @@ def get_task(id):
             return task
 
 def create_task(task_name, task_notes=""):
-    api_url = 'https://api.trello.com/1/cards/'
     api_params = { 'key':api_key,
         'token':api_token,
         'idList': not_started_listid,
         'name': task_name,
         'desc': task_notes }
-    task = requests.post(api_url, data=api_params)
+    task = requests.post(api_url('card'), data=api_params)
     new_task = json.loads(task.text)
     return get_task(new_task['id'])
+
+def edit_task(task):
+    url_call = api_url('card', task['id'])      
+    api_params= { 'key':api_key,
+        'token':api_token,
+        'name':task['title'],
+        'desc':task['notes'],
+        'idList':list_id(task['status'])}
+    response = requests.put(url_call, data=api_params)
+    return task
+
+def api_url(board_list_or_card, card_ID=""):
+    match board_list_or_card:
+        case 'board':
+            return 'https://api.trello.com/1/boards/'
+        case 'list':
+            return 'https://api.trello.com/1/boards/' + board_id + '/lists/'
+        case 'card':
+            return 'https://api.trello.com/1/cards/' + card_ID + '/'
+
+def list_id(status):
+    match status:
+        case 'Not Started':
+            return not_started_listid
+        case 'In Progress':
+            return in_progress_listid
+        case 'Complete':
+            return complete_listid

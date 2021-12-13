@@ -9,14 +9,12 @@ app.config.from_object(Config())
 
 
 @app.route('/')
-def index():    
-    # list = sorted(get_items(), key=lambda item:item['status'], reverse=True)
+def index():
     sorted_list = sorted(get_tasks(), key=lambda item:item['status'], reverse=True)
     return render_template("index.html", to_do_items=sorted_list)
 
 @app.route('/', methods=['POST'])
 def add_to_do():
-    # add_item(request.form.get('to-do-title'), request.form.get('to-do-notes'))
     create_task(request.form.get('to-do-title'), request.form.get('to-do-notes'))
     return redirect('/')
 
@@ -30,8 +28,9 @@ def amend_item(id):
     amended_status = request.form.get('task-status')
     amended_title = request.form.get('task-title')
     amended_notes = request.form.get('task-notes')
-    task = { 'id': int(id), 'status': amended_status, 'title': amended_title, 'notes': amended_notes }
-    save_item(task)
+    task = { 'id': id, 'status': amended_status, 'title': amended_title, 'notes': amended_notes }
+    print(id)
+    edit_task(task)
     return redirect('/')
 
 @app.route('/delete/<id>')
@@ -43,5 +42,4 @@ def view_delete_item(id):
 def delete_task(id):
     if request.form.get('delete-task-button'):
         delete_item(id)
-
     return redirect('/')
