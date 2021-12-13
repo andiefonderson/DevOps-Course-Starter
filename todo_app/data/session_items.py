@@ -75,13 +75,7 @@ def delete_item(id):
     item = get_item(id)
     
     existing_items.remove(item)
-
-    updated_items = []
-
-    for item in existing_items:
-        if(item['title'] != None):
-            updated_items.append(item)
     
-    session['items'] = updated_items
+    session['items'] = existing_items
 
-    return updated_items
+    return existing_items
