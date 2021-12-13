@@ -35,11 +35,10 @@ def amend_item(id):
 
 @app.route('/delete/<id>')
 def view_delete_item(id):
-    task = get_item(id)
+    task = get_task(id)
     return render_template("deletetask.html", task=task)
 
 @app.route('/delete/<id>', methods=['POST'])
 def delete_task(id):
-    if request.form.get('delete-task-button'):
-        delete_item(id)
+    delete_from_tasklist(id)
     return redirect('/')

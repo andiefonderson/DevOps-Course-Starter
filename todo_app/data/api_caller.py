@@ -57,6 +57,12 @@ def edit_task(task):
     response = requests.put(url_call, data=api_params)
     return task
 
+def delete_from_tasklist(id):
+    url_call = api_url('card', id)
+    api_params = { 'key':api_key, 'token':api_token }
+    response = requests.delete(url_call, params=api_params)
+    return response
+
 def api_url(board_list_or_card, card_ID=""):
     match board_list_or_card:
         case 'board':
