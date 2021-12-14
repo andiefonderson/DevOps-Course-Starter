@@ -1,7 +1,6 @@
 from flask import json
 import os
 import requests
-from requests.api import get
 
 api_key = os.getenv('TRELLO_KEY')
 api_token = os.getenv('TRELLO_TOKEN')
@@ -48,7 +47,7 @@ def create_task(task_name, task_notes=""):
     return get_task(new_task['id'])
 
 def edit_task(task):
-    url_call = api_url('card', task['id'])      
+    url_call = api_url('cardID', task['id'])      
     api_params= { 'key':api_key,
         'token':api_token,
         'name':task['title'],
@@ -58,10 +57,11 @@ def edit_task(task):
     return task
 
 def delete_from_tasklist(id):
-    url_call = api_url('card', id)
+    url_call = api_url('cardID', id)
     api_params = { 'key':api_key, 'token':api_token }
     response = requests.delete(url_call, params=api_params)
     return response
+
 
 def api_url(board_list_or_card, card_ID=""):
     match board_list_or_card:
@@ -70,6 +70,8 @@ def api_url(board_list_or_card, card_ID=""):
         case 'list':
             return 'https://api.trello.com/1/boards/' + board_id + '/lists/'
         case 'card':
+            return 'https://api.trello.com/1/cards/'
+        case 'cardID':
             return 'https://api.trello.com/1/cards/' + card_ID + '/'
 
 def list_id(status):
