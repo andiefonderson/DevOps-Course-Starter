@@ -1,5 +1,8 @@
+from datetime import datetime
+
+
 class Item:
-    def __init__(self, id, name, status, due_complete, due_date, notes = 'To Do'):
+    def __init__(self, id, name, status, due_complete, due_date, notes):
         self.id = id
         self.name = name
         self.status = status

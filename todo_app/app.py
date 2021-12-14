@@ -24,11 +24,16 @@ def view_to_do_item(id):
 
 @app.route('/task/<id>', methods=['POST'])
 def amend_item(id):
+    old_task = get_task(id)
     amended_status = request.form.get('task-status')
     amended_title = request.form.get('task-title')
     amended_notes = request.form.get('task-notes')
-    task = Item(id, amended_title, amended_status, amended_notes)
-    print(id)
+    amended_due_date = request.form.get('task-due-date')
+    print(amended_due_date)
+    amended_due_complete = True if amended_status == "Complete" else False
+    if amended_due_date == "":
+        amended_due_date = old_task.due_date
+    task = Item(id, amended_title, amended_status, amended_due_complete, amended_due_date, amended_notes)
     edit_task(task)
     return redirect('/task/' + id)
 

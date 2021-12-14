@@ -4,7 +4,7 @@
 {% block content %}
   <div class="jumbotron">
     <h1 class="display-4">To-Do App</h1>
-    <p class="lead">Just another to-do app.</p>
+    <p class="lead">Now integrated with Trello!</p>
   </div>
 
   <div class="list-group">
@@ -16,13 +16,15 @@
         </div>
         <p class="mb-1">{{ item.notes }}</p>
         <small class="text-muted">
-          {% if item.due_complete == True %}
-          Completed by its due date of {{ item.due_date }}
-          {% elif item.due_date != None %}
-          Due on {{ item.due_date }}
-          {% else %}
-          No due date set
-          {% endif %}
+          <i>
+            {% if item.due_complete == True %}
+            Completed by its due date of {{ item.due_date }}
+            {% elif item.due_date != None %}
+            Due on {{ item.due_date }}
+            {% else %}
+            No due date set
+            {% endif %}
+          </i>          
         </small>
       </a>
     {% endfor %}

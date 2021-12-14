@@ -37,6 +37,8 @@
                        <option value="Complete">Complete</option>
                     </select><br>
             </div>     
+            <label for="task-due-date">Due Date</label>
+            <input type="datetime-local" name="task-due-date" value={{task.due_date}} class="form-control">
             <div class="form-group">
                 <label for="task-notes"><b>Notes: </b></label>
                 <textarea name="task-notes" class="form-control">{{ task.notes }}</textarea>

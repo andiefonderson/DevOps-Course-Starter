@@ -1,6 +1,5 @@
 from flask import json
-import os
-import requests
+import os, requests
 
 from todo_app.data.Item import Item
 
@@ -52,7 +51,9 @@ def edit_task(task):
         'token':api_token,
         'name':task.name,
         'desc':task.notes,
-        'idList':list_id(task.status)}
+        'idList':list_id(task.status),
+        'due':task.due_date,
+        'dueComplete': task.due_complete}
     response = requests.put(url_call, data=api_params)
     return task
 
