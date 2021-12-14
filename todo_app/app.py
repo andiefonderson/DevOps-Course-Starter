@@ -9,7 +9,7 @@ app.config.from_object(Config())
 
 @app.route('/')
 def index():
-    sorted_list = sorted(get_tasks(), key=lambda item:item['status'], reverse=True)
+    sorted_list = sorted(get_tasks(), key=lambda item:item.status, reverse=True)
     return render_template("index.html", to_do_items=sorted_list)
 
 @app.route('/', methods=['POST'])
@@ -27,10 +27,10 @@ def amend_item(id):
     amended_status = request.form.get('task-status')
     amended_title = request.form.get('task-title')
     amended_notes = request.form.get('task-notes')
-    task = { 'id': id, 'status': amended_status, 'title': amended_title, 'notes': amended_notes }
+    task = Item(id, amended_title, amended_status, amended_notes)
     print(id)
     edit_task(task)
-    return redirect('/')
+    return redirect('/task/' + id)
 
 @app.route('/delete/<id>')
 def view_delete_item(id):

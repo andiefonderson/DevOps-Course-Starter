@@ -11,7 +11,7 @@
     {% for item in to_do_items %}
       <a href="/task/{{ item.id }}" class="list-group-item list-group-item-action">
         <div class="d-flex w-100 justify-content-between">
-          <h5 class="mb-1">{{ item.title }}</h5>
+          <h5 class="mb-1">{{ item.name }}</h5>
           <small class="text-muted">{{ item.status }}</small>        
         </div>
         <p class="mb-1">{{ item.notes }}</p>
