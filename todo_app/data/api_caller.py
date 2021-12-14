@@ -16,7 +16,7 @@ def get_tasks():
         "token":api_token, 
         "fields":"name", 
         "cards":"all", 
-        "card_fields":"name,desc,closed,due"}
+        "card_fields":"name,desc,closed,due,dueComplete"}
     list_cards = requests.get(api_url('list'), params=api_params).json()
     
     todo_tasks = []

@@ -15,6 +15,15 @@
           <small class="text-muted">{{ item.status }}</small>        
         </div>
         <p class="mb-1">{{ item.notes }}</p>
+        <small class="text-muted">
+          {% if item.due_complete == True %}
+          Completed by its due date of {{ item.due_date }}
+          {% elif item.due_date != None %}
+          Due on {{ item.due_date }}
+          {% else %}
+          No due date set
+          {% endif %}
+        </small>
       </a>
     {% endfor %}
   </div>

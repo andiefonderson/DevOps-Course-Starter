@@ -7,6 +7,13 @@
     <span></span>
     <h2>{{task.name}}</h2>
     <p><b>Current status: </b> {{task.status}}</p>
+    <p><b>Due date: </b>
+        {% if task.due_date == null %}
+        <i>No due date set</i>
+        {% else %}
+        {{task.due_date}}
+        {% endif %}
+    </p>
     <p><b>Notes: </b>{{ task.notes }}</p>
     <button class="btn btn-success" data-toggle="collapse" data-target="#edit-task-form" aria-expanded="false" aria-controls="edit-task-form">Edit</button>
     <a href="/delete/{{task.id}}" class="btn btn-danger" role="button" aria-pressed="true">Delete</a>    
