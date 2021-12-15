@@ -1,6 +1,5 @@
 from datetime import datetime
 
-
 class Item:
     def __init__(self, id, name, status, due_complete, due_date, notes):
         self.id = id
@@ -9,6 +8,12 @@ class Item:
         self.due_complete = due_complete
         self.due_date = due_date
         self.notes = notes
+        if self.due_date != None:
+            try:
+                simple_date = datetime.strptime(self.due_date[0:-8],"%Y-%m-%dT%H:%M").date()
+                self.simplified_date = simple_date.strftime("%d/%m/%Y")
+            except:
+                self.simplified_date = self.due_date
 
     def __getitem__(self, id):
         return self.id

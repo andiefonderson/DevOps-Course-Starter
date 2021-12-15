@@ -14,7 +14,7 @@ def index():
 
 @app.route('/', methods=['POST'])
 def add_to_do():
-    create_task(request.form.get('to-do-title'), request.form.get('to-do-notes'))
+    create_task(request.form.get('to-do-title'), request.form.get('to-do-due-date'), request.form.get('to-do-notes'))
     return redirect('/')
 
 @app.route('/task/<id>')
@@ -24,15 +24,12 @@ def view_to_do_item(id):
 
 @app.route('/task/<id>', methods=['POST'])
 def amend_item(id):
-    old_task = get_task(id)
     amended_status = request.form.get('task-status')
     amended_title = request.form.get('task-title')
     amended_notes = request.form.get('task-notes')
+    amended_due_complete = "true" if amended_status == "Complete" else "false"
     amended_due_date = request.form.get('task-due-date')
-    print(amended_due_date)
-    amended_due_complete = True if amended_status == "Complete" else False
-    if amended_due_date == "":
-        amended_due_date = old_task.due_date
+    
     task = Item(id, amended_title, amended_status, amended_due_complete, amended_due_date, amended_notes)
     edit_task(task)
     return redirect('/task/' + id)

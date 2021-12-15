@@ -18,9 +18,9 @@
         <small class="text-muted">
           <i>
             {% if item.due_complete == True %}
-            Completed by its due date of {{ item.due_date }}
+            Completed by its due date of {{ item.simplified_date }}
             {% elif item.due_date != None %}
-            Due on {{ item.due_date }}
+            Due on {{ item.simplified_date }}
             {% else %}
             No due date set
             {% endif %}
@@ -40,6 +40,11 @@
             <label for="to-do-title">Please enter the name of the task: </label>
             <input type="text" name="to-do-title" class="form-control" required>
           </div>     
+          <div class="form-group">
+            <label for="task-due-date">Due date: </label>
+            <input class="form-control" id="date" name="task-due-date" placeholder="MM/DD/YYY" type="text"/>
+            <small class="text-muted"><i>Optional</i></small>
+          </div>
           <div class="form-group">
             <label for="to-do-notes"><b>Notes: </b> </label>
             <textarea name="to-do-notes" class="form-control"></textarea>

@@ -8,10 +8,10 @@
     <h2>{{task.name}}</h2>
     <p><b>Current status: </b> {{task.status}}</p>
     <p><b>Due date: </b>
-        {% if task.due_date == null %}
-        <i>No due date set</i>
+        {% if task.due_date == None %}
+            <i>No due date set</i>
         {% else %}
-        {{task.due_date}}
+            {{task.simplified_date}}
         {% endif %}
     </p>
     <p><b>Notes: </b>{{ task.notes }}</p>
@@ -36,9 +36,11 @@
                        <option value="In Progress">In Progress</option>
                        <option value="Complete">Complete</option>
                     </select><br>
-            </div>     
-            <label for="task-due-date">Due Date</label>
-            <input type="datetime-local" name="task-due-date" value={{task.due_date}} class="form-control">
+            </div>   
+            <div class="form-group">
+                <label for="task-date">Due Date</label>
+                <input class="form-control" id="date" name="task-due-date" placeholder="MM/DD/YYY" value={{task.simplified_date}} type="text"/>
+            </div>              
             <div class="form-group">
                 <label for="task-notes"><b>Notes: </b></label>
                 <textarea name="task-notes" class="form-control">{{ task.notes }}</textarea>

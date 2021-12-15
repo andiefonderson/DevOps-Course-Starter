@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask import json
 import os, requests
 
@@ -36,11 +37,12 @@ def get_task(id):
         if id == task.id:
             return task
 
-def create_task(task_name, task_notes=""):
+def create_task(task_name, task_due_date, task_notes=""):
     api_params = { 'key':api_key,
         'token':api_token,
         'idList': not_started_listid,
         'name': task_name,
+        'due': task_due_date,
         'desc': task_notes }
     task = requests.post(api_url('card'), data=api_params).json()
     return get_tasks()
@@ -52,9 +54,11 @@ def edit_task(task):
         'name':task.name,
         'desc':task.notes,
         'idList':list_id(task.status),
-        'due':task.due_date,
-        'dueComplete': task.due_complete}
+        'due': task.due_date,
+        'dueComplete': task.due_complete
+        }
     response = requests.put(url_call, data=api_params)
+    print(response)
     return task
 
 def delete_from_tasklist(id):
