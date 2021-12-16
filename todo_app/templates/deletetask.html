@@ -11,6 +11,9 @@
             <h5 class="card-title">{{ task.name }} </h5>
         </div>
         <div class="card-body">    
+            {% if task.due_date != None %}
+            <small class="text-muted"><i>Due date: {{ task.simplified_date }}</i></small>
+            {% endif %}
             <p class="card-text">
                 {% if task.notes == "" %}
                 <i>No notes added to this task.</i>

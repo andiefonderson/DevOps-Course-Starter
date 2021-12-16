@@ -1,5 +1,6 @@
 from datetime import date
 from flask import Flask, render_template, redirect, request
+from flask.helpers import url_for
 
 from todo_app.data.api_caller import *
 from todo_app.flask_config import Config
@@ -15,7 +16,10 @@ def index():
 
 @app.route('/', methods=['POST'])
 def add_to_do():
-    create_task(request.form.get('to-do-title'), request.form.get('to-do-due-date'), request.form.get('to-do-notes'))
+    due_date = request.form.get('task-due-date')
+    if due_date != "":
+        due_date = datetime.strptime(request.form.get('task-due-date'), "%d/%m/%Y")
+    create_task(request.form.get('to-do-title'), due_date, request.form.get('to-do-notes'))
     return redirect('/')
 
 @app.route('/task/<id>')
@@ -38,7 +42,10 @@ def amend_item(id):
 @app.route('/delete/<id>')
 def view_delete_item(id):
     task = get_task(id)
-    return render_template("deletetask.html", task=task)
+    if task != None:
+        return render_template("deletetask.html", task=task)
+    else:
+        return redirect('/')
 
 @app.route('/delete/<id>', methods=['POST'])
 def delete_task(id):

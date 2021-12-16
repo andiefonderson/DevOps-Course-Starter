@@ -1,7 +1,7 @@
 from datetime import datetime
 from flask import json
-import os
-import requests
+import os, requests
+from requests import api
 
 from todo_app.data.Item import Item
 
@@ -13,12 +13,11 @@ in_progress_listid = os.getenv('IN_PROGRESS_LIST_ID')
 complete_listid = os.getenv('COMPLETE_LIST_ID')
 
 def get_tasks():
-    api_params = {"key":api_key, 
-        "token":api_token, 
-        "fields":"name", 
+    api_params = {"fields":"name", 
         "cards":"all", 
         "card_fields":"name,desc,closed,due,dueComplete"}
-    list_cards = requests.get(api_url('list'), params=api_params).json()
+    get_params = set_params(api_params)
+    list_cards = requests.get(api_url('list'), params=get_params).json()
     
     todo_tasks = []
 
@@ -39,32 +38,31 @@ def get_task(id):
             return task
 
 def create_task(task_name, task_due_date, task_notes=""):
-    api_params = { 'key':api_key,
-        'token':api_token,
-        'idList': not_started_listid,
+    api_params = { 'idList': not_started_listid,
         'name': task_name,
         'due': task_due_date,
         'desc': task_notes }
-    task = requests.post(api_url('card'), data=api_params).json()
+    create_params = set_params(api_params)
+    response = requests.post(api_url('card'), data=create_params).json()
     return get_tasks()
 
 def edit_task(task):
-    url_call = api_url('cardID', task.id)      
-    api_params= { 'key':api_key,
-        'token':api_token,
-        'name':task.name,
+    url_call = api_url('cardID', task.id)   
+    api_params= { 'name':task.name,
         'desc':task.notes,
         'idList':list_id(task.status),
         'due': task.due_date,
         'dueComplete': task.due_complete }
-    response = requests.put(url_call, data=api_params)
+    edit_params = set_params(api_params)
+    response = requests.put(url_call, data=edit_params)
     return task
 
 def delete_from_tasklist(id):
     url_call = api_url('cardID', id)
     api_params = { 'key':api_key, 'token':api_token }
     response = requests.delete(url_call, params=api_params)
-    return response
+    response.close()
+    return get_tasks()
 
 
 def api_url(board_list_or_card, card_ID=""):
@@ -86,3 +84,9 @@ def list_id(status):
             return in_progress_listid
         case 'Complete':
             return complete_listid
+
+def set_params(new_params):
+    key_and_token = { 'key':api_key, 'token':api_token }
+    params = key_and_token.copy()
+    params.update(new_params)
+    return params

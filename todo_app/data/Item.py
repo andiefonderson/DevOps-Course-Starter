@@ -1,7 +1,7 @@
 from datetime import datetime
 
 class Item:
-    def __init__(self, id, name, status, due_complete, due_date, notes):
+    def __init__(self, id, name, status, due_complete, due_date, notes = 'To Do'):
         self.id = id
         self.name = name
         self.status = status
@@ -14,6 +14,8 @@ class Item:
                 self.simplified_date = simple_date.strftime("%d/%m/%Y")
             except:
                 self.simplified_date = self.due_date
+        else:
+            self.simplified_date = ""
 
     def __getitem__(self, id):
         return self.id
