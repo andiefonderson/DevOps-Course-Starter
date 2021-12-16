@@ -1,6 +1,7 @@
 from datetime import datetime
 from flask import json
-import os, requests
+import os
+import requests
 
 from todo_app.data.Item import Item
 
@@ -55,10 +56,8 @@ def edit_task(task):
         'desc':task.notes,
         'idList':list_id(task.status),
         'due': task.due_date,
-        'dueComplete': task.due_complete
-        }
+        'dueComplete': task.due_complete }
     response = requests.put(url_call, data=api_params)
-    print(response)
     return task
 
 def delete_from_tasklist(id):

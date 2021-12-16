@@ -1,3 +1,4 @@
+from datetime import date
 from flask import Flask, render_template, redirect, request
 
 from todo_app.data.api_caller import *
@@ -28,7 +29,7 @@ def amend_item(id):
     amended_title = request.form.get('task-title')
     amended_notes = request.form.get('task-notes')
     amended_due_complete = "true" if amended_status == "Complete" else "false"
-    amended_due_date = request.form.get('task-due-date')
+    amended_due_date = datetime.strptime(request.form.get('task-due-date'), "%d/%m/%Y")
     
     task = Item(id, amended_title, amended_status, amended_due_complete, amended_due_date, amended_notes)
     edit_task(task)
