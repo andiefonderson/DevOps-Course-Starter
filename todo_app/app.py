@@ -49,5 +49,6 @@ def view_delete_item(id):
 
 @app.route('/delete/<id>', methods=['POST'])
 def delete_task(id):
-    delete_from_tasklist(id)
+    if request.form.get('delete-task-button'):
+        delete_from_tasklist(id)
     return redirect('/')
