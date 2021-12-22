@@ -2,7 +2,7 @@ from datetime import date
 from os import stat
 from flask import Flask, render_template, redirect, request
 
-from todo_app.data.api_caller import *
+from todo_app.data.trello_items import *
 from todo_app.flask_config import Config
 
 app = Flask(__name__)
