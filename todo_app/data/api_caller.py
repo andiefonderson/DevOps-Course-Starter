@@ -31,13 +31,23 @@ def get_tasks():
     
     return todo_tasks
 
+def get_filtered_tasks(status):
+    full_task_list = get_tasks()
+    filtered_list = []
+
+    for task in full_task_list:
+        if task.status == status:
+            filtered_list.append(task)
+
+    return filtered_list
+
 def get_task(id):
     tasks = get_tasks()
     for task in tasks:
         if id == task.id:
             return task
 
-def create_task(task_name, task_due_date, task_notes=""):
+def create_task(task_name, task_due_date="", task_notes=""):
     api_params = { 'idList': not_started_listid,
         'name': task_name,
         'due': task_due_date,
@@ -60,21 +70,22 @@ def edit_task(task):
 def delete_from_tasklist(id):
     url_call = api_url('cardID', id)
     api_params = { 'key':api_key, 'token':api_token }
-    response = requests.delete(url_call, params=api_params)
-    response.close()
+    response = requests.delete(url_call, params=api_params, timeout=10)
     return get_tasks()
 
 
-def api_url(board_list_or_card, card_ID=""):
+def api_url(board_list_or_card, prop_id=""):
     match board_list_or_card:
         case 'board':
             return 'https://api.trello.com/1/boards/'
         case 'list':
             return 'https://api.trello.com/1/boards/' + board_id + '/lists/'
+        case 'listID':
+            return 'https://api.trello.com/1/lists/'+ prop_id + '/cards/'
         case 'card':
             return 'https://api.trello.com/1/cards/'
         case 'cardID':
-            return 'https://api.trello.com/1/cards/' + card_ID + '/'
+            return 'https://api.trello.com/1/cards/' + prop_id + '/'
 
 def list_id(status):
     match status:
