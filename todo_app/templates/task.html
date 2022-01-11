@@ -5,8 +5,15 @@
 <div class="col-md-12">
     <h1 class="display-4">Task</h1>
     <span></span>
-    <h2>{{task.title}}</h2>
+    <h2>{{task.name}}</h2>
     <p><b>Current status: </b> {{task.status}}</p>
+    <p><b>Due date: </b>
+        {% if task.due_date == None %}
+            <i>No due date set</i>
+        {% else %}
+            {{task.simplified_date}}
+        {% endif %}
+    </p>
     <p><b>Notes: </b>{{ task.notes }}</p>
     <button class="btn btn-success" data-toggle="collapse" data-target="#edit-task-form" aria-expanded="false" aria-controls="edit-task-form">Edit</button>
     <a href="/delete/{{task.id}}" class="btn btn-danger" role="button" aria-pressed="true">Delete</a>    
@@ -16,10 +23,11 @@
 <div class="collapse" id="edit-task-form">
     <div class="card card-body">
         <form id="edit-task" method="post">
+            <input type="hidden" name="_method" value="put" />
             <h2>Edit the task here:</h2>
             <div class="form-group">
                 <label for="task-title">Task Title: </label>
-                <input type="text" name="task-title" class="form-control" value="{{task.title}}">
+                <input type="text" name="task-title" class="form-control" value="{{task.name}}">
             </div>
             <div class="form-group">
                 <label for="task-status">Current Status: </label>
@@ -28,7 +36,11 @@
                        <option value="In Progress">In Progress</option>
                        <option value="Complete">Complete</option>
                     </select><br>
-            </div>     
+            </div>   
+            <div class="form-group">
+                <label for="task-date">Due Date</label>
+                <input class="form-control" id="date" name="task-due-date" placeholder="MM/DD/YYY" type="text" value={{task.simplified_date}}>
+            </div>              
             <div class="form-group">
                 <label for="task-notes"><b>Notes: </b></label>
                 <textarea name="task-notes" class="form-control">{{ task.notes }}</textarea>

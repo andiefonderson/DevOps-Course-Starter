@@ -2,43 +2,79 @@
 {% block title %}To-Do App{% endblock %}
 
 {% block content %}
-  <div class="jumbotron">
-    <h1 class="display-4">To-Do App</h1>
-    <p class="lead">Just another to-do app.</p>
-  </div>
+<div class="jumbotron">
+  <h1 class="display-4">To-Do App</h1>
+  <p class="lead">Just another to-do app.</p>
+</div>
 
-  <div class="list-group">
-    {% for item in to_do_items %}
-      <a href="/task/{{ item.id }}" class="list-group-item list-group-item-action">
-        <div class="d-flex w-100 justify-content-between">
-          <h5 class="mb-1">{{ item.title }}</h5>
-          <small class="text-muted">{{ item.status }}</small>        
-        </div>
-        <p class="mb-1">{{ item.notes }}</p>
-      </a>
-    {% endfor %}
+<div class="dropdown">
+  <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+    aria-expanded="false">
+    Filter by status
+  </button>
+  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+    <a class="dropdown-item" href="/not-started" name="not-started">Not Started</a>
+    <a class="dropdown-item" href="/in-progress" name="in-progress-filter">In Progress</a>
+    <a class="dropdown-item" href="/complete" name="complete-filter">Complete</a>
+    <div class="dropdown-divider"></div>
+    <a class="dropdown-item" href="/" name="see-all">See All</a>
   </div>
-  
+</div>
 
-  <div class="col py-sm-3">
-    <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#add-to-do-form">Add to To-Do List</button>
-    <div class="collapse" id="add-to-do-form">
-      <div class="card card-body">
-        <form id="add-to-do" method="post">
-          <div class="form-group">
-            <label for="to-do-title">Please enter the name of the task: </label>
-            <input type="text" name="to-do-title" class="form-control" required>
-          </div>     
-          <div class="form-group">
-            <label for="to-do-notes"><b>Notes: </b> </label>
-            <textarea name="to-do-notes" class="form-control"></textarea>
-          </div> 
-          <div class="form-group">
-            <input name="submit-task" type="submit" class="btn btn-info">
-          </div>      
-        </form>
-      </div>
+<div class="list-group">
+  {% for item in to_do_items %}
+  <a href="/task/{{ item.id }}" class="list-group-item list-group-item-action">
+    <div class="d-flex w-100 justify-content-between">
+      <h5 class="mb-1">{{ item.name }}</h5>
+      <small class="text-muted">{{ item.status }}</small>
     </div>
-  </div>  
-  
+    <p class="mb-1">{{ item.notes }}</p>
+    <small class="text-muted">
+      <i>
+        {% if item.due_complete == True %}
+        Completed by its due date of {{ item.simplified_date }}
+        {% elif item.due_date != None %}
+        Due on {{ item.simplified_date }}
+        {% else %}
+        No due date set
+        {% endif %}
+      </i>
+    </small>
+  </a>
+  {% endfor %}
+</div>
+
+{% if empty_to_do_list == true %}
+<div class="alert alert-warning" role="alert">
+  No tasks found. Try adding some below!
+</div>
+{% endif %}
+
+<div class="col py-sm-3">
+  <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#add-to-do-form">Add to To-Do
+    List</button>
+  <div class="collapse" id="add-to-do-form">
+    <div class="card card-body">
+      <form id="add-to-do" method="post">
+        <div class="form-group">
+          <label for="to-do-title">Please enter the name of the task: </label>
+          <input type="text" name="to-do-title" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label for="task-due-date">Due date: </label>
+          <input class="form-control" id="date" name="task-due-date" placeholder="MM/DD/YYY" type="text" />
+          <small class="text-muted"><i>Optional</i></small>
+        </div>
+        <div class="form-group">
+          <label for="to-do-notes"><b>Notes: </b> </label>
+          <textarea name="to-do-notes" class="form-control"></textarea>
+        </div>
+        <div class="form-group">
+          <input name="submit-task" type="submit" class="btn btn-info">
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 {% endblock %}

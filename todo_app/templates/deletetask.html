@@ -8,9 +8,12 @@
     </div>
     <div class="card text-center">
         <div class="card-header">
-            <h5 class="card-title">{{ task.title }} </h5>
+            <h5 class="card-title">{{ task.name }} </h5>
         </div>
         <div class="card-body">    
+            {% if task.due_date != None %}
+            <small class="text-muted"><i>Due date: {{ task.simplified_date }}</i></small>
+            {% endif %}
             <p class="card-text">
                 {% if task.notes == "" %}
                 <i>No notes added to this task.</i>
@@ -24,8 +27,9 @@
     <div class="col py-sm-3">
         <p>Once it's deleted, it can't be restored again!</p>
         <form id="delete-task" class="form-group" method="post">
-            <button class="btn btn-danger" name="delete-task-button" value="delete-task-button">Delete</button> 
-            <button class="btn btn-secondary" name="back-to-task" value="back-to-task">Cancel</button>                    
+            <input type="hidden" name="_method" value="delete" />
+            <button class="btn btn-danger" type="submit" name="delete-task-button" value="delete-task-button">Delete</button> 
+            <a href="/" class="btn btn-secondary" role="button" aria-pressed="true">Cancel</a>                   
         </form>
     </div> 
 </div>
