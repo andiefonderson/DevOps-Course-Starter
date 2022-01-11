@@ -21,5 +21,5 @@ class Item:
         return self.id
 
     @classmethod
-    def from_trello_card(cls, card, list):
-        return cls(card['id'], card['name'], list['name'], card['dueComplete'], card['due'], card['desc'])
+    def from_trello_card(cls, card, status):
+        return cls(card['id'], card['name'], status, card['dueComplete'], card['due'], card['desc'])

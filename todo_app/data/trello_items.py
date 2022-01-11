@@ -26,20 +26,28 @@ def get_tasks():
             if card['closed']:
                 continue
             else:
-                task = Item.from_trello_card(card, list)
+                task = Item.from_trello_card(card, list['name'])
                 todo_tasks.append(task)
     
     return todo_tasks
 
 def get_filtered_tasks(status):
-    full_task_list = get_tasks()
+    api_params = {"fields":"name,desc,closed,due,dueComplete"}
+    get_params = set_params(api_params)
+    card_list = requests.get(api_url('listID', list_id(status)), params=get_params).json()
+
     filtered_list = []
 
-    for task in full_task_list:
-        if task.status == status:
+    for card in card_list:
+        if card['closed']:
+            continue
+        else:
+            task = Item.from_trello_card(card, status)
             filtered_list.append(task)
 
     return filtered_list
+
+
 
 def get_task(id):
     tasks = get_tasks()

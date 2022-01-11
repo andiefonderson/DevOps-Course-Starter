@@ -22,9 +22,9 @@ def filtered_index(status):
         case 'not-started':
            status_filter = 'Not Started'
         case 'in-progress':
-            status_filter = 'In Progress'
+           status_filter = 'In Progress'
         case 'complete':
-            status_filter = 'Complete' 
+           status_filter = 'Complete' 
     filtered_list = get_filtered_tasks(status_filter)
     number_of_tasks = bool(len(filtered_list) == 0)
     return render_template("index.html", to_do_items=filtered_list, empty_to_do_list=number_of_tasks)
@@ -37,6 +37,11 @@ def add_to_do():
     create_task(request.form.get('to-do-title'), due_date, request.form.get('to-do-notes'))
     return redirect('/')
 
+@app.route('/<status>', methods=['POST'])
+def add_to_do_from_filtered_tasks(status):
+    add_to_do()
+    return redirect('/')
+
 @app.route('/task/<id>')
 def view_to_do_item(id):
     task = get_task(id)
@@ -47,8 +52,9 @@ def amend_item(id):
     amended_status = request.form.get('task-status')
     amended_title = request.form.get('task-title')
     amended_notes = request.form.get('task-notes')
+    date = request.form.get('task-due-date')
     amended_due_complete = "true" if amended_status == "Complete" else "false"
-    amended_due_date = datetime.strptime(request.form.get('task-due-date'), "%d/%m/%Y")
+    amended_due_date = datetime.strptime(date, "%d/%m/%Y") if date != "" else ""
     
     task = Item(id, amended_title, amended_status, amended_due_complete, amended_due_date, amended_notes)
     edit_task(task)
