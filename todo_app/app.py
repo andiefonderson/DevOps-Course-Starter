@@ -1,9 +1,9 @@
 from datetime import date
-from os import stat
 from flask import Flask, render_template, redirect, request
 
 from todo_app.data.trello_items import *
 from todo_app.flask_config import Config
+from todo_app.view_model import ViewModel
 
 app = Flask(__name__)
 app.config.from_object(Config())
@@ -13,21 +13,22 @@ app.config.from_object(Config())
 def index():
     sorted_list = sorted(get_tasks(), key=lambda item:item.status, reverse=True)
     number_of_tasks = sorted_list.count
-    return render_template("index.html", to_do_items=sorted_list, empty_to_do_list=number_of_tasks)
+    item_view_model = ViewModel(sorted_list).items
+    return render_template("index.html", view_model=item_view_model, empty_to_do_list=number_of_tasks)
 
 @app.route('/<status>')
 def filtered_index(status):
-    status_filter = ''
+    filter_list = []
+    model = ViewModel(get_tasks())
     match(status):
         case 'not-started':
-           status_filter = 'Not Started'
+           filter_list = model.not_started
         case 'in-progress':
-           status_filter = 'In Progress'
+           filter_list = model.in_progress
         case 'complete':
-           status_filter = 'Complete' 
-    filtered_list = get_filtered_tasks(status_filter)
-    number_of_tasks = bool(len(filtered_list) == 0)
-    return render_template("index.html", to_do_items=filtered_list, empty_to_do_list=number_of_tasks)
+           filter_list = model.complete
+    number_of_tasks = bool(len(filter_list) == 0)
+    return render_template("index.html", view_model=filter_list, empty_to_do_list=number_of_tasks)
 
 @app.route('/', methods=['POST'])
 def add_to_do():

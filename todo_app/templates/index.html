@@ -13,7 +13,7 @@
     Filter by status
   </button>
   <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-    <a class="dropdown-item" href="/not-started" name="not-started">Not Started</a>
+    <a class="dropdown-item" href="/not-started" name="not-started-filter">Not Started</a>
     <a class="dropdown-item" href="/in-progress" name="in-progress-filter">In Progress</a>
     <a class="dropdown-item" href="/complete" name="complete-filter">Complete</a>
     <div class="dropdown-divider"></div>
@@ -22,7 +22,7 @@
 </div>
 
 <div class="list-group">
-  {% for item in to_do_items %}
+  {% for item in view_model %}
   <a href="/task/{{ item.id }}" class="list-group-item list-group-item-action">
     <div class="d-flex w-100 justify-content-between">
       <h5 class="mb-1">{{ item.name }}</h5>
