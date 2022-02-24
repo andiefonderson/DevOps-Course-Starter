@@ -5,12 +5,7 @@ from requests import api
 
 from todo_app.data.Item import Item
 
-api_key = os.getenv('TRELLO_KEY')
-api_token = os.getenv('TRELLO_TOKEN')
-board_id = os.getenv('TRELLO_BOARD_ID')
-not_started_listid = os.getenv('NOT_STARTED_LIST_ID')
-in_progress_listid = os.getenv('IN_PROGRESS_LIST_ID')
-complete_listid = os.getenv('COMPLETE_LIST_ID')
+
 
 def get_tasks():
     api_params = {"fields":"name", 
@@ -39,7 +34,7 @@ def get_task(id):
             return task
 
 def create_task(task_name, task_due_date="", task_notes=""):
-    api_params = { 'idList': not_started_listid,
+    api_params = { 'idList': list_id('Not Started'),
         'name': task_name,
         'due': task_due_date,
         'desc': task_notes }
@@ -60,25 +55,29 @@ def edit_task(task):
 
 def delete_from_tasklist(id):
     url_call = api_url('cardID', id)
-    api_params = { 'key':api_key, 'token':api_token }
+    api_params = set_params('')
     response = requests.delete(url_call, params=api_params, timeout=10)
     return get_tasks()
 
 
 def api_url(board_list_or_card, prop_id=""):
+    board_id = os.getenv('TRELLO_BOARD_ID')
     match board_list_or_card:
         case 'board':
             return 'https://api.trello.com/1/boards/'
         case 'list':
-            return 'https://api.trello.com/1/boards/' + board_id + '/lists/'
+            return f'https://api.trello.com/1/boards/{board_id}/lists/'
         case 'listID':
-            return 'https://api.trello.com/1/lists/'+ prop_id + '/cards/'
+            return f'https://api.trello.com/1/lists/{prop_id}/cards/'
         case 'card':
             return 'https://api.trello.com/1/cards/'
         case 'cardID':
-            return 'https://api.trello.com/1/cards/' + prop_id + '/'
+            return f'https://api.trello.com/1/cards/{prop_id}/'
 
 def list_id(status):
+    not_started_listid = os.getenv('NOT_STARTED_LIST_ID')
+    in_progress_listid = os.getenv('IN_PROGRESS_LIST_ID')
+    complete_listid = os.getenv('COMPLETE_LIST_ID')
     match status:
         case 'Not Started':
             return not_started_listid
@@ -88,7 +87,14 @@ def list_id(status):
             return complete_listid
 
 def set_params(new_params):
+    api_key = os.getenv('TRELLO_KEY')
+    api_token = os.getenv('TRELLO_TOKEN')
+
     key_and_token = { 'key':api_key, 'token':api_token }
-    params = key_and_token.copy()
-    params.update(new_params)
-    return params
+    
+    if new_params == '':
+        return key_and_token
+    else:
+        params = key_and_token.copy()
+        params.update(new_params)
+        return params
