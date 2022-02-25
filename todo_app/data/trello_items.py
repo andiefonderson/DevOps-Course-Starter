@@ -1,7 +1,5 @@
 from datetime import datetime
-from flask import json
 import os, requests
-from requests import api
 
 from todo_app.data.Item import Item
 

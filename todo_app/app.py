@@ -13,7 +13,7 @@ def create_app():
     @app.route('/')
     def index():
         sorted_list = sorted(get_tasks(), key=lambda item:item.status, reverse=True)
-        number_of_tasks = sorted_list.count
+        number_of_tasks = bool(len(sorted_list) == 0)
         item_view_model = ViewModel(sorted_list).items
         return render_template("index.html", view_model=item_view_model, empty_to_do_list=number_of_tasks)
 
