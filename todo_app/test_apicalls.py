@@ -1,5 +1,5 @@
-import os
-import pytest
+import os, pytest
+import re
 from dotenv import load_dotenv, find_dotenv
 from todo_app import app
 from todo_app.data.trello_items import *
@@ -17,13 +17,35 @@ def client():
 def test_index_page(monkeypatch, client):
     monkeypatch.setattr(requests, 'get', get_lists_stub)
     response = client.get('/')
+    page_data = response.data.decode()
     assert response.status_code == 200
-    assert 'Test card' in response.data.decode()
-    assert 'Test in progress' in response.data.decode()
+    assert 'Test card' in page_data
+    assert 'Test in progress' in page_data
+
+def test_return_task(monkeypatch, client):
+    monkeypatch.setattr(requests, 'get', get_lists_stub)
+    response = client.get('/task/639')
+    page_data = response.data.decode()
+    assert 'Test done' in page_data
+    assert not 'Test in progress' in page_data
+
+def test_add_task(monkeypatch, client):
+    monkeypatch.setattr(requests, 'post', add_task_stub)
+    monkeypatch.setattr(requests, 'get', get_amended_lists_stub)
+    page_data = { 'to-do-title': 'New task name', 'task-due-date': '', 'to-do-notes': 'Random notes' }
+    response = client.post('/', data=page_data, follow_redirects = True)
+
+    page_data = response.data.decode()
+    assert 'New task name' in page_data
 
 def test_delete_task(monkeypatch, client):
     monkeypatch.setattr(requests, 'post', delete_task_stub)
-    response = client.post('delete/123')
+    data = { 'delete-task-button': True }
+    monkeypatch.setattr(requests, 'get', post_delete_tasklist_stub)
+    response = client.post(f'/delete/098', data=data, follow_redirects = True)
+    reply = client.post(f'/delete/wow', data=data)
+    assert not 'Test in progress' in response.data.decode()
+    assert not reply.status_code == 200
 
 class StubResponse():
     def __init__(self, fake_response_data):
@@ -38,26 +60,79 @@ def get_lists_stub(url, params):
     if url == f'https://api.trello.com/1/boards/{test_board_id}/lists/':
         fake_response_data = fake_response()
     return StubResponse(fake_response_data)
-    
-def delete_task_stub(url, card_id):
+
+def get_amended_lists_stub(url, params):
     test_board_id = os.environ.get('TRELLO_BOARD_ID')
     fake_response_data = None
-    if url == f'https://api.trello.com/1/cards/123/':
-        fake_response_data = fake_delete_response()
+    if url == f'https://api.trello.com/1/boards/{test_board_id}/lists/':
+        fake_response_data = amended_fake_response()
+    return StubResponse(fake_response_data)
+
+def add_task_stub(url, data):
+    fake_response_data = None
+    if url == f'https://api.trello.com/1/cards/':
+        fake_response_data = add_to_tasks_fake_response(data)
+    return StubResponse(fake_response_data)
+
+def delete_task_stub(url, data):
+    fake_response_data = None
+    if url == f'https://api.trello.com/1/cards/098/':
+        fake_response_data = delete_task_fake_response()
+    return StubResponse(fake_response_data)
+
+def post_delete_tasklist_stub(url, params):
+    test_board_id = os.environ.get('TRELLO_BOARD_ID')
+    fake_response_data = None
+    if url == f'https://api.trello.com/1/boards/{test_board_id}/lists/':
+        fake_response_data = post_delete_fake_response()
     return StubResponse(fake_response_data)
 
 def fake_response():
     return [
         {'id': '123abc',
         'name': 'Not Started',
-        'cards': [{'id': '456', 'name': 'Test card', 'desc': 'Test card description', 'closed': False, 'due': None, 'dueComplete': False}]},
+        'cards': [{'id': '456', 'name': 'Test card', 'desc': 'Test card description', 'closed': False, 'due': None, 'dueComplete': False, 'dateLastActivity': None }]},
         {'id': '456def',
         'name': 'In Progress',
-        'cards': [{'id': '098', 'name': 'Test in progress', 'desc': 'Still ongoing', 'closed': False, 'due': '2022-02-22T05:00:00.000Z', 'dueComplete': False}]},
+        'cards': [{'id': '098', 'name': 'Test in progress', 'desc': 'Still ongoing', 'closed': False, 'due': '2022-02-22T05:00:00.000Z', 'dueComplete': False, 'dateLastActivity': None }]},
         {'id': '789ghi',
         'name': 'Complete',
-        'cards': [{'id': '639', 'name': 'Test done', 'desc': 'This has been finished.', 'closed': False, 'due': None, 'dueComplete': True}]}
+        'cards': [{'id': '639', 'name': 'Test done', 'desc': 'This has been finished.', 'closed': False, 'due': None, 'dueComplete': True, 'dateLastActivity': None }]}
         ]
 
-def fake_delete_response():
+def response_contains_item(item_id, list):
+    contains_item = False
+    for status in list:
+        for item in status:
+            if item['id'] == item_id:
+                contains_item = True
+                break
+    return contains_item
+
+def add_to_tasks_fake_response(data):
+    default_response = fake_response()
+    new_item = { 'id': 827, 'name': data['name'], 'desc': data['desc'], 'closed': False, 'due': None, 'dueComplete': False, 'dateLastActivity': None }
+    default_response[0]['cards'].append(new_item)
+    return default_response
+
+def amended_fake_response():
+    old_response = fake_response()
+    new_item = { 'id': 827, 'name': 'New task name', 'desc': 'Random notes', 'closed': False, 'due': None, 'dueComplete': False, 'dateLastActivity': None }
+    old_response[0]['cards'].append(new_item)
+    return old_response
+
+def post_delete_fake_response():
+    return [
+        {'id': '123abc',
+        'name': 'Not Started',
+        'cards': [{'id': '456', 'name': 'Test card', 'desc': 'Test card description', 'closed': False, 'due': None, 'dueComplete': False, 'dateLastActivity': None }]},
+        {'id': '456def',
+        'name': 'In Progress',
+        'cards': []},
+        {'id': '789ghi',
+        'name': 'Complete',
+        'cards': [{'id': '639', 'name': 'Test done', 'desc': 'This has been finished.', 'closed': False, 'due': None, 'dueComplete': True, 'dateLastActivity': None }]}
+        ]
+
+def delete_task_fake_response():
     return { 'limits': {} }

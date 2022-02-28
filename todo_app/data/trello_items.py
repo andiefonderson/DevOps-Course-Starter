@@ -8,7 +8,7 @@ from todo_app.data.Item import Item
 def get_tasks():
     api_params = {"fields":"name", 
         "cards":"all", 
-        "card_fields":"name,desc,closed,due,dueComplete"}
+        "card_fields":"name,desc,closed,due,dueComplete,dateLastActivity"}
     get_params = set_params(api_params)
     list_cards = requests.get(api_url('list'), params=get_params).json()
     
@@ -38,7 +38,7 @@ def create_task(task_name, task_due_date="", task_notes=""):
         'desc': task_notes }
     create_params = set_params(api_params)
     response = requests.post(api_url('card'), data=create_params).json()
-    return get_tasks()
+    return response
 
 def edit_task(task):
     url_call = api_url('cardID', task.id)   

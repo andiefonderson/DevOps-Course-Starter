@@ -1,12 +1,13 @@
 from datetime import datetime
 
 class Item:
-    def __init__(self, id, name, status, due_complete, due_date, notes = 'To Do'):
+    def __init__(self, id, name, status, due_complete, due_date, last_modified_date, notes = ''):
         self.id = id
         self.name = name
         self.status = status
         self.due_complete = due_complete
         self.due_date = due_date
+        self.last_modified_date = last_modified_date
         self.notes = notes
         if self.due_date != None:
             try:
@@ -22,4 +23,4 @@ class Item:
 
     @classmethod
     def from_trello_card(cls, card, status):
-        return cls(card['id'], card['name'], status, card['dueComplete'], card['due'], card['desc'])
+        return cls(card['id'], card['name'], status, card['dueComplete'], card['due'], card['dateLastActivity'], card['desc'])
