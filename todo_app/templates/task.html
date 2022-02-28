@@ -15,9 +15,9 @@
         {% endif %}
     </p>
     <p><b>Notes: </b>{{ task.notes }}</p>
-    <button class="btn btn-success" data-toggle="collapse" data-target="#edit-task-form" aria-expanded="false" aria-controls="edit-task-form">Edit</button>
-    <a href="/delete/{{task.id}}" class="btn btn-danger" role="button" aria-pressed="true">Delete</a>    
-    <a href="/" class="btn btn-info" role="button" aria-pressed="true">Back</a>
+    <button class="btn btn-success" data-toggle="collapse" data-target="#edit-task-form" aria-expanded="false" aria-controls="edit-task-form" name="edit-button">Edit</button>
+    <a href="/delete/{{task.id}}" class="btn btn-danger" role="button" aria-pressed="true" name="delete-button">Delete</a>    
+    <a href="/" class="btn btn-info" role="button" aria-pressed="true" name="back-button">Back</a>
 </div>
 
 <div class="collapse" id="edit-task-form">
@@ -39,7 +39,7 @@
             </div>   
             <div class="form-group">
                 <label for="task-date">Due Date</label>
-                <input class="form-control" id="date" name="task-due-date" placeholder="MM/DD/YYY" type="text" value={{task.simplified_date}}>
+                <input class="form-control" id="date" name="task-due-date" placeholder="DD/MM/YYY" type="text" value={{task.simplified_date}}>
             </div>              
             <div class="form-group">
                 <label for="task-notes"><b>Notes: </b></label>

@@ -26,10 +26,10 @@
   <a href="/task/{{ item.id }}" class="list-group-item list-group-item-action">
     <div class="d-flex w-100 justify-content-between">
       <h5 class="mb-1 task-title">{{ item.name }}</h5>
-      <small class="text-muted">{{ item.status }}</small>
+      <small class="text-muted task-status">{{ item.status }}</small>
     </div>
     <p class="mb-1">{{ item.notes }}</p>
-    <small class="text-muted">
+    <small class="text-muted task-due-text">
       <i>
         {% if item.due_complete == True %}
         Completed by its due date of {{ item.simplified_date }}
@@ -62,7 +62,7 @@
         </div>
         <div class="form-group">
           <label for="task-due-date">Due date: </label>
-          <input class="form-control" id="date" name="task-due-date" placeholder="MM/DD/YYY" type="text" />
+          <input class="form-control" id="date" name="task-due-date" placeholder="DD/MM/YYY" type="text" />
           <small class="text-muted"><i>Optional</i></small>
         </div>
         <div class="form-group">

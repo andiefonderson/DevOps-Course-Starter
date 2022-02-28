@@ -3,6 +3,7 @@ from dotenv import load_dotenv, find_dotenv
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import Select
 from threading import Thread
 from todo_app import app
 
@@ -82,13 +83,32 @@ def driver():
         yield driver
 
 def test_task_journey(driver, app_with_test_board):
+    # Checks that the app can start up properly after creating a board
     driver.get('http://localhost:5000/')
     assert driver.title == 'To-Do App'
 
+    # Checks that a task can be added
     test_task_title = 'This is a test task'
     add_test_task(driver, test_task_title)
-    task_item = driver.find_element(By.CLASS_NAME, 'task-title').text
-    assert task_item == test_task_title
+    task = driver.find_element(By.CLASS_NAME, 'task-title')
+    assert task.text == test_task_title
+
+    # Checks that a task can be edited and that its changes persists on the index page
+    task.click()
+    edited_task_title = 'This is an edited test task'
+    edit_due_date = '22/02/2022'
+    edit_task(driver, edited_task_title, 'Complete', edit_due_date)
+    refreshed_task = driver.find_element(By.CLASS_NAME, 'task-title')
+    assert refreshed_task.text == edited_task_title
+    assert driver.find_element(By.CLASS_NAME, 'task-status').text == 'Complete'
+    assert driver.find_element(By.CLASS_NAME, 'task-due-text').text == f'Completed by its due date of {edit_due_date}'
+
+    # Checks that a task can be deleted and that the right task is being deleted
+    refreshed_task.click()
+    click_button(driver, 'delete-button')
+    assert driver.find_element(By.CLASS_NAME, 'card-title').text == edited_task_title
+    click_button(driver, 'delete-task-button')
+    assert not driver.find_elements (By.CLASS_NAME, 'task-title') == None 
 
 def add_test_task(driver, task_text):
     to_do_button = driver.find_element(By.NAME, 'add-to-do-task-button')
@@ -100,3 +120,21 @@ def add_test_task(driver, task_text):
     new_task_title_textbox.send_keys(task_text)
     new_task_notes_textbox.send_keys('These are the notes for the test task.')
     submit_button.click()
+
+def edit_task(driver, edited_title, status, due_date):
+    click_button(driver, 'edit-button')
+    task_title_textbox = driver.find_element(By.NAME, 'task-title')
+    task_title_textbox.clear()
+    task_title_textbox.send_keys(edited_title)
+    select = Select(driver.find_element(By.NAME, 'task-status'))
+    select.select_by_value(status)
+    driver.find_element(By.NAME, 'task-due-date').send_keys(due_date)
+    click_button(driver, 'submit-amend-task')
+    click_button(driver, 'back-button')
+
+def delete_task(driver):
+    click_button(driver, 'delete-button')
+
+
+def click_button(driver, button_name):
+    return driver.find_element(By.NAME, button_name).click()

@@ -60,7 +60,7 @@ $ pip install pytest
 For more information on pytest, visit the [information page on PyPi](https://pypi.org/project/pytest/).
 
 If running this through Visual Studio Code, install the Python and Python Test Explorer for Visual Studio Code extensions. You will then be able to use the 'Testing' tab to run your tests.
-Alternatively, you can run the tests by entering `pytest` as a command in the terminal.
+Alternatively, you can run the tests by entering `poetry run pytest` as a command in the terminal.
 
 ## Running the App
 
