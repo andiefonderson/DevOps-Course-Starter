@@ -62,6 +62,8 @@ For more information on pytest, visit the [information page on PyPi](https://pyp
 If running this through Visual Studio Code, install the Python and Python Test Explorer for Visual Studio Code extensions. You will then be able to use the 'Testing' tab to run your tests.
 Alternatively, you can run the tests by entering `poetry run pytest` as a command in the terminal.
 
+The tests also use Selenium through Firefox. You will need to have Firefox installed to ensure these tests will work.
+
 ## Running the App
 
 Once the all dependencies have been installed, start the Flask app in development mode within the Poetry environment by running:

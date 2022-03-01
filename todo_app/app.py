@@ -12,24 +12,23 @@ def create_app():
 
     @app.route('/')
     def index():
-        sorted_list = sorted(get_tasks(), key=lambda item:item.status, reverse=True)
-        number_of_tasks = bool(len(sorted_list) == 0)
-        item_view_model = ViewModel(sorted_list).items
-        return render_template("index.html", view_model=item_view_model, empty_to_do_list=number_of_tasks)
+        sorted_list = get_tasks()
+        item_view_model = ViewModel(sorted_list)
+        return render_template("index.html", view_model=item_view_model)
 
     @app.route('/<status>')
     def filtered_index(status):
-        filter_list = []
         model = ViewModel(get_tasks())
+        filter_list = []
         match(status):
             case 'not-started':
                 filter_list = model.not_started
             case 'in-progress':
                 filter_list = model.in_progress
             case 'complete':
-                filter_list = model.complete
-        number_of_tasks = bool(len(filter_list) == 0)
-        return render_template("index.html", view_model=filter_list, empty_to_do_list=number_of_tasks)
+                filter_list = model.filter_list_by_status('Complete')
+        filtered_model = ViewModel(filter_list)
+        return render_template("index.html", view_model=filtered_model)
 
     @app.route('/', methods=['POST'])
     def add_to_do():
@@ -58,7 +57,7 @@ def create_app():
         amended_due_complete = "true" if amended_status == "Complete" else "false"
         amended_due_date = datetime.strptime(date, "%d/%m/%Y") if date != "" else ""
         
-        task = Item(id, amended_title, amended_status, amended_due_complete, amended_due_date, amended_notes)
+        task = Item(id, amended_title, amended_status, amended_due_complete, amended_due_date, None, amended_notes)
         edit_task(task)
         return redirect('/task/' + id)
 

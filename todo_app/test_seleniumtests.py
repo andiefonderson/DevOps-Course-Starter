@@ -101,7 +101,7 @@ def test_task_journey(driver, app_with_test_board):
     refreshed_task = driver.find_element(By.CLASS_NAME, 'task-title')
     assert refreshed_task.text == edited_task_title
     assert driver.find_element(By.CLASS_NAME, 'task-status').text == 'Complete'
-    assert driver.find_element(By.CLASS_NAME, 'task-due-text').text == f'Completed by its due date of {edit_due_date}'
+    assert driver.find_element(By.CLASS_NAME, 'task-due-text').text == 'Completed today'
 
     # Checks that a task can be deleted and that the right task is being deleted
     refreshed_task.click()

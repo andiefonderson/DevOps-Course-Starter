@@ -1,5 +1,4 @@
 import os, pytest
-import re
 from dotenv import load_dotenv, find_dotenv
 from todo_app import app
 from todo_app.data.trello_items import *
@@ -56,35 +55,29 @@ class StubResponse():
 
 def get_lists_stub(url, params):
     test_board_id = os.environ.get('TRELLO_BOARD_ID')
-    fake_response_data = None
-    if url == f'https://api.trello.com/1/boards/{test_board_id}/lists/':
-        fake_response_data = fake_response()
-    return StubResponse(fake_response_data)
+    target_url = f'https://api.trello.com/1/boards/{test_board_id}/lists/'
+    return retrieve_stub_response(url, target_url, fake_response())
 
 def get_amended_lists_stub(url, params):
     test_board_id = os.environ.get('TRELLO_BOARD_ID')
-    fake_response_data = None
-    if url == f'https://api.trello.com/1/boards/{test_board_id}/lists/':
-        fake_response_data = amended_fake_response()
-    return StubResponse(fake_response_data)
+    target_url = f'https://api.trello.com/1/boards/{test_board_id}/lists/'
+    return retrieve_stub_response(url, target_url, amended_fake_response())
 
 def add_task_stub(url, data):
-    fake_response_data = None
-    if url == f'https://api.trello.com/1/cards/':
-        fake_response_data = add_to_tasks_fake_response(data)
-    return StubResponse(fake_response_data)
+    return retrieve_stub_response(url, 'https://api.trello.com/1/cards/', add_to_tasks_fake_response(data))
 
 def delete_task_stub(url, data):
-    fake_response_data = None
-    if url == f'https://api.trello.com/1/cards/098/':
-        fake_response_data = delete_task_fake_response()
-    return StubResponse(fake_response_data)
+    return retrieve_stub_response(url, 'https://api.trello.com/1/cards/098/', delete_task_fake_response())
 
 def post_delete_tasklist_stub(url, params):
     test_board_id = os.environ.get('TRELLO_BOARD_ID')
+    target_url = f'https://api.trello.com/1/boards/{test_board_id}/lists/'
+    return retrieve_stub_response(url, target_url, post_delete_fake_response())
+
+def retrieve_stub_response(url, target_url, list):
     fake_response_data = None
-    if url == f'https://api.trello.com/1/boards/{test_board_id}/lists/':
-        fake_response_data = post_delete_fake_response()
+    if url == target_url:
+        fake_response_data = list
     return StubResponse(fake_response_data)
 
 def fake_response():
@@ -110,10 +103,10 @@ def response_contains_item(item_id, list):
     return contains_item
 
 def add_to_tasks_fake_response(data):
-    default_response = fake_response()
+    old_response = fake_response()
     new_item = { 'id': 827, 'name': data['name'], 'desc': data['desc'], 'closed': False, 'due': None, 'dueComplete': False, 'dateLastActivity': None }
-    default_response[0]['cards'].append(new_item)
-    return default_response
+    old_response[0]['cards'].append(new_item)
+    return old_response
 
 def amended_fake_response():
     old_response = fake_response()
