@@ -53,7 +53,7 @@ def edit_task(task):
 
 def delete_from_tasklist(id):
     url_call = api_url('cardID', id)
-    api_params = set_params('')
+    api_params = set_params()
     response = requests.delete(url_call, params=api_params, timeout=10)
     return get_tasks()
 
@@ -84,7 +84,7 @@ def list_id(status):
         case 'Complete':
             return complete_listid
 
-def set_params(new_params):
+def set_params(new_params = ''):
     api_key = os.getenv('TRELLO_KEY')
     api_token = os.getenv('TRELLO_TOKEN')
 

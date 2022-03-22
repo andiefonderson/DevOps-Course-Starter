@@ -61,7 +61,7 @@ class ViewModel:
     
     @property
     def no_items_in_complete(self):
-        return len(self.complete) == 0
+        return len(self.filter_list_by_status('Complete')) == 0
 
     def filter_list_by_status(self, status):
         list = []
