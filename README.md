@@ -40,7 +40,7 @@ TRELLO_KEY= (enter key here)
 TRELLO_TOKEN= "(enter token here)"
 ```
 
-You will then need to enter the board ID of a to-do list as well as the IDs of the lists. When setting up the board for the lists, the app has been configured to have 'Not Started, 'In Progress', and 'Complete' lists as the task status. It is ideal to do this for the board you want to connect to.
+You will then need to enter the board ID of a to-do list as well as the IDs of the lists. When setting up the board for the lists, the app has been configured to have 'Not Started, 'In Progress', and 'Complete' lists as the task status. To make the filters work properly, please make sure the list titles match these statuses.
 
 When the board has been set up, you can use the Trello API to find the IDs of the board and lists. The easiest API requests to use for this would be the '[Get All Boards You're a Member To](https://developer.atlassian.com/cloud/trello/guides/rest-api/api-introduction/#getting-our-member-s-boards)' and, using the board ID for it, the '[Get Lists on a Board](https://developer.atlassian.com/cloud/trello/rest/api-group-boards/#api-boards-id-lists-get)'. Once you have gotten them, input their values into the `.env` file as follows:
 ```
@@ -50,6 +50,13 @@ NOT_STARTED_LIST_ID= (enter 'Not Started' list ID here)
 IN_PROGRESS_LIST_ID= (enter 'In Progress' list ID here)
 COMPLETE_LIST_ID=(enter 'Complete' list ID here)
 ```
+
+The unit tests use pytest. For more information on pytest, visit the [information page on PyPi](https://pypi.org/project/pytest/).
+
+If running this through Visual Studio Code, install the Python and Python Test Explorer for Visual Studio Code extensions. You will then be able to use the 'Testing' tab to run your tests.
+Alternatively, you can run the tests by entering `poetry run pytest` as a command in the terminal.
+
+The tests also use Selenium through Firefox. You will need to have Firefox (version 97.0.1 or higher) installed to ensure these tests will work.
 
 ## Running the App
 

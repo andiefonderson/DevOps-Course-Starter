@@ -13,7 +13,7 @@
     Filter by status
   </button>
   <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-    <a class="dropdown-item" href="/not-started" name="not-started">Not Started</a>
+    <a class="dropdown-item" href="/not-started" name="not-started-filter">Not Started</a>
     <a class="dropdown-item" href="/in-progress" name="in-progress-filter">In Progress</a>
     <a class="dropdown-item" href="/complete" name="complete-filter">Complete</a>
     <div class="dropdown-divider"></div>
@@ -22,18 +22,44 @@
 </div>
 
 <div class="list-group">
-  {% for item in to_do_items %}
+  {% if view_model.no_items_in_model == true %}
+  <div class="alert alert-warning" role="alert">
+    No tasks found. Try adding some below!
+  </div>
+  {% else %}
+  {% if view_model.no_items_in_not_started == false %}
+  <li class="list-group-item list-group-item-action list-group-item-danger" name="not-started-heading"><h5>Not Started</h5></li>  
+    {% for item in view_model.not_started %}
+      <a href="/task/{{ item.id }}" class="list-group-item list-group-item-action">
+        <div class="d-flex w-100 justify-content-between">
+          <h5 class="mb-1 task-title">{{ item.name }}</h5>
+          <small class="text-muted task-status">{{ item.status }}</small>
+        </div>
+        <p class="mb-1">{{ item.notes }}</p>
+        <small class="text-muted task-due-text">
+          <i>
+            {% if item.due_date != None %}
+            Due on {{ item.simplified_date }}
+            {% else %}
+            No due date set
+            {% endif %}
+          </i>
+        </small>
+      </a>  
+    {% endfor %}
+  {% endif %}
+  {% if view_model.no_items_in_in_progress == false %}
+  <li class="list-group-item list-group-item-action list-group-item-warning" name="in-progress-heading"><h5>In Progress</h5></li>  
+  {% for item in view_model.in_progress %}
   <a href="/task/{{ item.id }}" class="list-group-item list-group-item-action">
     <div class="d-flex w-100 justify-content-between">
-      <h5 class="mb-1">{{ item.name }}</h5>
-      <small class="text-muted">{{ item.status }}</small>
+      <h5 class="mb-1 task-title">{{ item.name }}</h5>
+      <small class="text-muted task-status">{{ item.status }}</small>
     </div>
     <p class="mb-1">{{ item.notes }}</p>
-    <small class="text-muted">
+    <small class="text-muted task-due-text">
       <i>
-        {% if item.due_complete == True %}
-        Completed by its due date of {{ item.simplified_date }}
-        {% elif item.due_date != None %}
+        {% if item.due_date != None %}
         Due on {{ item.simplified_date }}
         {% else %}
         No due date set
@@ -42,16 +68,47 @@
     </small>
   </a>
   {% endfor %}
+  {% endif %}
+  {% if view_model.no_items_in_complete == false %}
+  <li class="list-group-item list-group-item-action list-group-item-success" name="complete-heading"><h5>Complete</h5></li>  
+  {% for item in view_model.complete %}
+  <a href="/task/{{ item.id }}" class="list-group-item list-group-item-action">
+    <div class="d-flex w-100 justify-content-between">
+      <h5 class="mb-1 task-title">{{ item.name }}</h5>
+      <small class="text-muted task-status">{{ item.status }}</small>
+    </div>
+    <p class="mb-1">{{ item.notes }}</p>
+    <small class="text-muted task-due-text">
+      <i>
+        Completed today
+      </i>
+    </small>
+  </a>
+  {% endfor %}
+  {% if view_model.should_show_all_done_items == false %}
+  <button class="list-group-item list-group-item-action list-group-item-info" data-toggle="collapse" data-target="#older-completed-tasks"><i>There are more tasks that have been completed. Click here to view them</i></button>
+  <div class="collapse" id="older-completed-tasks">
+  {% for item in view_model.older_done_items %}  
+  <a href="/task/{{ item.id }}" class="list-group-item list-group-item-action">
+    <div class="d-flex w-100 justify-content-between">
+      <h6 class="mb-1 task-title">{{ item.name }}</h6>
+      <small class="text-muted task-status">{{ item.status }}</small>
+    </div>
+    <small class="text-muted task-status">
+      <i>
+        {{ item.notes }}
+      </i>
+    </small>
+  </a>   
+  {% endfor %}
+  </div> 
+  {% endif %}
+  {% endif %}
+  {% endif %}
 </div>
-
-{% if empty_to_do_list == true %}
-<div class="alert alert-warning" role="alert">
-  No tasks found. Try adding some below!
-</div>
-{% endif %}
 
 <div class="col py-sm-3">
-  <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#add-to-do-form">Add to To-Do
+  <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#add-to-do-form" name="add-to-do-task-button">Add to To-Do
     List</button>
   <div class="collapse" id="add-to-do-form">
     <div class="card card-body">
@@ -62,7 +119,7 @@
         </div>
         <div class="form-group">
           <label for="task-due-date">Due date: </label>
-          <input class="form-control" id="date" name="task-due-date" placeholder="MM/DD/YYY" type="text" />
+          <input class="form-control" id="date" name="task-due-date" placeholder="DD/MM/YYY" type="text" />
           <small class="text-muted"><i>Optional</i></small>
         </div>
         <div class="form-group">
