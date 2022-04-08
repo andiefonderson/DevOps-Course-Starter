@@ -1,0 +1,100 @@
+- name: Install To Do app on a new web server
+  hosts: webservers
+  remote_user: ec2-user
+  vars_prompt:
+    - name: api_key
+      prompt: Enter the Trello API key
+      private: no
+
+    - name: api_token
+      prompt: Enter the Trello token
+      private: no
+    
+    - name: board_id
+      prompt: Enter the Trello board ID
+      private: no
+
+    - name: id_not_started
+      prompt: Enter the Not Started list ID
+      private: no
+
+    - name: id_in_progress
+      prompt: Enter the In Progress list ID
+      private: no
+    
+    - name: id_complete_id
+      prompt: Enter the Complete list ID
+      private: no
+
+  tasks:
+    - name: Install Git
+      ansible.builtin.yum:
+        name: git
+        state: latest
+      become: yes
+
+    - name: Install Python3
+      ansible.builtin.yum:
+        name: python3
+        state: latest
+      become: yes
+
+    - name: Check the version of Python installed
+      ansible.builtin.command:
+        cmd: python3 --version
+      register: python_version
+    
+    - name: Upgrade Python to Python 3.10
+      ansible.builtin.script:
+        cmd: /home/ec2-user/Ansible/InstallPython3-10.sh
+      when: python_version.stdout != "Python 3.10.0"
+
+    - name: Install Poetry
+      ansible.builtin.shell: 
+        cmd: curl -sSL https://install.python-poetry.org | python3 -
+
+    - name: Create directory for the To-Do App code
+      ansible.builtin.file:
+        dest: /opt/todoapp
+        state: directory
+        owner: ec2-user
+      become: yes
+
+    - name: Get the latest version of the To-Do App code
+      ansible.builtin.git:
+        repo: https://github.com/andiefonderson/DevOps-Course-Starter.git
+        dest: /opt/todoapp
+        update: yes
+        version: exercise-4
+
+    - name: Install project dependencies
+      ansible.builtin.shell:
+        cmd: ~/.local/bin/poetry install
+        chdir: /opt/todoapp
+
+    - name: Generate a .env file
+      ansible.builtin.template:
+        src: /home/ec2-user/Ansible/.env.j2
+        dest: /opt/todoapp/.env
+        owner: ec2-user
+    
+    - name: Add To-Do service file to node
+      ansible.builtin.copy:
+        src: /home/ec2-user/Ansible/todoapp.service
+        dest: /etc/systemd/system/todoapp.service
+        owner: ec2-user
+      become: yes
+
+    - name: Install Policy-Kit1 to make daemon reload for the next task work
+      ansible.builtin.yum:
+        name: polkit
+        state: latest
+      become: yes
+
+    - name: Start the To-Do App
+      ansible.builtin.systemd:
+        name: todoapp
+        enabled: yes
+        state: started
+        daemon_reload: yes
+      become: yes

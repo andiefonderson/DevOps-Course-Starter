@@ -76,3 +76,22 @@ You should see output similar to the following:
  * Debugger PIN: 226-556-590
 ```
 Now visit [`http://localhost:5000/`](http://localhost:5000/) in your web browser to view the app.
+
+## Provisioning on Virtual Machines
+
+The project includes a folder that allows you to spin up virtual machines to run the to-do app elsewhere. You will need to have Ansible (version 2.11.9 or higher) installed to do this.
+If you don't have Ansible installed, you can do so by running the following command:
+```
+sudo pip install ansible
+```
+
+To check if Ansible has installed successfully, you can run the `ansible --version` command. If it prints the version number and some additional info, it has then successfully installed.
+
+To use Ansible to provision the app on another machine, run the following command within the project's Ansible folder:
+```
+ansible-playbook playbook.yml -i ~/Ansible/inventory.ini
+```
+
+The commmand will prompt for the Trello API key, token, and the IDs of the Trello board and lists to link to the app. You will need to enter these to make sure everything will be linked up correctly. 
+
+After a successful run, you will be able to access the app by entering the IP address of the host into your address bar followed by `:5000`.
