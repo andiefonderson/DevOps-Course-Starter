@@ -1,0 +1,8 @@
+# Ignore the pycache files
+*/__pycache__
+
+# Ignore the test files
+*/tests
+
+# Ignore the 'old' folder in todo_app
+*/old
