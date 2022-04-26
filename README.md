@@ -106,4 +106,24 @@ It's possible to have both created at the same time using the following command:
 ```
 docker compose up
 ```
-You will then be able to access the development version on [`http://localhost:5000/`](http://localhost:5000/) while the production version is available on [`http://localhost:80/`](http://localhost:80/).
+The command will build and run the containers for you. You will then be able to access the development version on [`http://localhost:5000/`](http://localhost:5000/) while the production version is available on [`http://localhost:80/`](http://localhost:80/).
+
+If you want to build and run the containers separately, use the below commands to do so.
+
+To build only the development container, run this command:
+```
+docker build --target development --tag todo-app:dev .
+```
+To run the development container:
+```
+docker run --env-file ./.env -p 5000:5000 --mount type=bind,source="$(pwd)"/todo_app,target=/app/todo_app todo-app:dev
+```
+
+To build only the production container, run this command:
+```
+docker build --target production --tag todo-app:prod .
+```
+To run the production container:
+```
+docker run --env-file ./.env -p 80:80 todo-app:prod
+```
