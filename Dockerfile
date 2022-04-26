@@ -15,5 +15,3 @@ ENTRYPOINT poetry run gunicorn -b 0.0.0.0:80 'todo_app.app:create_app()'
 FROM base AS development
 EXPOSE 5000
 ENTRYPOINT poetry run flask run --host 0.0.0.0
-
-FROM base AS test
