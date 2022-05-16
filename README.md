@@ -7,7 +7,7 @@ The project uses poetry for Python to create an isolated environment and manage 
 ### Poetry installation (Bash)
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/install-poetry.py | python -
+curl -sSL https://install.python-poetry.org | python3 -
 ```
 
 ### Poetry installation (PowerShell)
@@ -36,18 +36,18 @@ The project is set up to integrate with a Trello board. In the `.env`, you will 
 
 When adding in the API key and token into the `.env` file, enter it into the file as follows:
 ```
-TRELLO_KEY= (enter key here)
-TRELLO_TOKEN= "(enter token here)"
+TRELLO_KEY=(enter key here)
+TRELLO_TOKEN=(enter token here)
 ```
 
 You will then need to enter the board ID of a to-do list as well as the IDs of the lists. When setting up the board for the lists, the app has been configured to have 'Not Started, 'In Progress', and 'Complete' lists as the task status. To make the filters work properly, please make sure the list titles match these statuses.
 
 When the board has been set up, you can use the Trello API to find the IDs of the board and lists. The easiest API requests to use for this would be the '[Get All Boards You're a Member To](https://developer.atlassian.com/cloud/trello/guides/rest-api/api-introduction/#getting-our-member-s-boards)' and, using the board ID for it, the '[Get Lists on a Board](https://developer.atlassian.com/cloud/trello/rest/api-group-boards/#api-boards-id-lists-get)'. Once you have gotten them, input their values into the `.env` file as follows:
 ```
-TRELLO_BOARD_ID= (enter board ID here)
+TRELLO_BOARD_ID=(enter board ID here)
 
-NOT_STARTED_LIST_ID= (enter 'Not Started' list ID here)
-IN_PROGRESS_LIST_ID= (enter 'In Progress' list ID here)
+NOT_STARTED_LIST_ID=(enter 'Not Started' list ID here)
+IN_PROGRESS_LIST_ID=(enter 'In Progress' list ID here)
 COMPLETE_LIST_ID=(enter 'Complete' list ID here)
 ```
 
@@ -95,3 +95,35 @@ ansible-playbook playbook.yml -i ~/Ansible/inventory.ini
 The commmand will prompt for the Trello API key, token, and the IDs of the Trello board and lists to link to the app. You will need to enter these to make sure everything will be linked up correctly. 
 
 After a successful run, you will be able to access the app by entering the IP address of the host into your address bar followed by `:5000`.
+
+## Provisioning on a Docker Container
+
+The project also utilises Docker to spin up development and production instances of the app in Docker containers. You will need to have Docker installed for this to work. Visit the [Get Docker page](https://docs.docker.com/get-docker/) for instructions. 
+
+The project already has a Dockerfile and a docker-compose file ready to create the development and production containers of the app. The development version runs on Flask as before. Any changes made to the files in the `todo_app` folder upon saving will immediately be reflected on Docker. The production version runs on Gunicorn and would not display any debug information. 
+
+It's possible to have both created at the same time using the following command:
+```
+docker compose up
+```
+The command will build and run the containers for you. You will then be able to access the development version on [`http://localhost:5000/`](http://localhost:5000/) while the production version is available on [`http://localhost:80/`](http://localhost:80/).
+
+If you want to build and run the containers separately, use the below commands to do so.
+
+To build only the development container, run this command:
+```
+docker build --target development --tag todo-app:dev .
+```
+To run the development container:
+```
+docker run --env-file ./.env -p 5000:5000 --mount type=bind,source="$(pwd)"/todo_app,target=/app/todo_app todo-app:dev
+```
+
+To build only the production container, run this command:
+```
+docker build --target production --tag todo-app:prod .
+```
+To run the production container:
+```
+docker run --env-file ./.env -p 80:80 todo-app:prod
+```

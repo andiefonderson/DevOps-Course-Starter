@@ -1,6 +1,6 @@
 import pytest, datetime
-from view_model import *
-from data.Item import *
+from todo_app.view_model import *
+from todo_app.data.Item import *
 
 def test_return_items():
     items = dummy_items()
