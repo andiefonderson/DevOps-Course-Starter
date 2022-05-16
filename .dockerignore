@@ -6,3 +6,6 @@
 
 # Ignore the 'old' folder in todo_app
 */old
+
+# Ignore the '.env' file
+.env
