@@ -1,8 +1,10 @@
+from optparse import Option
 import os, pytest, requests
 from dotenv import load_dotenv, find_dotenv
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support.ui import Select
 from threading import Thread
 from todo_app import app
@@ -10,6 +12,7 @@ from todo_app import app
 def create_board(board_name):
     url = 'https://api.trello.com/1/boards/'
     api_params = params({ 'name': board_name })
+    print(api_params)
     response = requests.post(url, api_params).json()
     board_id = response['id']
     rename_lists(board_id)
@@ -62,6 +65,7 @@ def params(add_params):
 @pytest.fixture(scope='module')
 def app_with_test_board():
     file_path = find_dotenv('.env')
+    os.environ['FLASK_ENV'] = "testing"
     load_dotenv(file_path, override=True)
     new_board_id = create_board('Selenium Test Board')
     os.environ['TRELLO_BOARD_ID'] = new_board_id
@@ -79,10 +83,12 @@ def app_with_test_board():
 
 @pytest.fixture(scope="module")
 def driver():
-    with webdriver.Firefox() as driver:
+    options = Options()
+    options.add_argument("-headless")
+    with webdriver.Firefox(options=options) as driver:
         yield driver
 
-def test_task_journey(driver, app_with_test_board):
+def test_task_journey(driver, app_with_test_board):    
     # Checks that the app can start up properly after creating a board
     driver.get('http://localhost:5000/')
     assert driver.title == 'To-Do App'

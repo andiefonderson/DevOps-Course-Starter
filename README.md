@@ -116,7 +116,7 @@ docker build --target development --tag todo-app:dev .
 ```
 To run the development container:
 ```
-docker run --env-file ./.env -p 5000:5000 --mount type=bind,source="$(pwd)"/todo_app,target=/app/todo_app todo-app:dev
+docker run --env-file ./.env -p 5000:5000 --mount type=bind,source="$(pwd)"/todo_app,target=/todo_app/todo_app todo-app:dev
 ```
 
 To build only the production container, run this command:
