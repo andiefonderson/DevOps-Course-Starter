@@ -37,5 +37,3 @@ services:
       - type: bind
         source: ./todo_app
         target: //todo_app/todo_app
-    ports:
-      - "8080:8080"

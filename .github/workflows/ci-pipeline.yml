@@ -1,12 +1,17 @@
 name: Continuous Integration Pipeline
 on: [push]
+
 jobs:
   build:
     name: Build and run unit and integration tests
     runs-on: ubuntu-latest
     steps:
+    - name: Build Docker container
     - uses: actions/checkout@v2
-    - run: |
-        docker build --target testing --tag todo-app:test .
-        docker run --env-file ./.env -p 8080:8080 --mount type=bind,source="$(pwd)"/todo_app,target=/todo_app/todo_app todo-app:test todo_app/tests_e2e
-        docker run -p 8080:8080 --mount type=bind,source="$(pwd)"/todo_app,target=/todo_app/todo_app todo-app:test todo_app/tests
+    - run: docker build --target testing --tag todo-app:test .        
+    
+    - name: Run unit and integration tests
+    - run: docker run --mount type=bind,source="$(pwd)"/todo_app,target=/todo_app/todo_app todo-app:test todo_app/tests
+
+    - name: Run end-to-end tests
+    - run: docker run -e TRELLO_KEY={{ secrets.TRELLO_KEY }} -e TRELLO_TOKEN={{ secrets.TRELLO_TOKEN }} --mount type=bind,source="$(pwd)"/todo_app,target=/todo_app/todo_app todo-app:test todo_app/tests_e2e

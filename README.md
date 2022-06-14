@@ -131,7 +131,7 @@ docker run -p 8080:8080 --mount type=bind,source="$(pwd)"/todo_app,target=/todo_
 ```
 For the end-to-end tests, run the following command:
 ```
-docker run --env-file ./.env -p 8080:8080 --mount type=bind,source="$(pwd)"/todo_app,target=/todo_app/todo_app todo-app:test todo_app/tests_e2e
+docker run --env-file ./.env --mount type=bind,source="$(pwd)"/todo_app,target=/todo_app/todo_app todo-app:test todo_app/tests_e2e
 ```
 
 
