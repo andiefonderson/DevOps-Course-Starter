@@ -25,4 +25,3 @@ RUN curl -sSLO https://github.com/mozilla/geckodriver/releases/download/v0.30.0/
 COPY .env.test /todo_app/.env.test
 EXPOSE 8080
 ENTRYPOINT [ "poetry", "run", "pytest" ]
-CMD [ "todo_app/tests_e2e", "todo_app/tests" ]

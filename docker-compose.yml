@@ -27,6 +27,7 @@ services:
     build:
       context: .
       target: testing
+    command: [ "todo_app/tests_e2e", "todo_app/tests" ]
     image: todo_app:test
     env_file:
       - .env

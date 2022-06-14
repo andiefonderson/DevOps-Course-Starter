@@ -100,7 +100,7 @@ After a successful run, you will be able to access the app by entering the IP ad
 
 The project also utilises Docker to spin up development and production instances of the app in Docker containers. You will need to have Docker installed for this to work. Visit the [Get Docker page](https://docs.docker.com/get-docker/) for instructions. 
 
-The project already has a Dockerfile and a docker-compose file ready to create the development and production containers of the app. The development version runs on Flask as before. Any changes made to the files in the `todo_app` folder upon saving will immediately be reflected on Docker. The production version runs on Gunicorn and would not display any debug information. 
+The project already has a Dockerfile and a docker-compose file ready to create the development, testing, and production containers of the app. The development and testing version run on Flask as before. Any changes made to the files in the `todo_app` folder upon saving will immediately be reflected on Docker. The production version runs on Gunicorn and would not display any debug information. 
 
 It's possible to have both created at the same time using the following command:
 ```
@@ -118,6 +118,22 @@ To run the development container:
 ```
 docker run --env-file ./.env -p 5000:5000 --mount type=bind,source="$(pwd)"/todo_app,target=/todo_app/todo_app todo-app:dev
 ```
+
+
+To build only the testing container, run this command:
+```
+docker build --target testing --tag todo-app:test .
+```
+To run the testing container, there are two separate commands to ensure the right environment variables are used for the tests.
+For unit and integration tests, run the following command:
+```
+docker run -p 8080:8080 --mount type=bind,source="$(pwd)"/todo_app,target=/todo_app/todo_app todo-app:test todo_app/tests
+```
+For the end-to-end tests, run the following command:
+```
+docker run --env-file ./.env -p 8080:8080 --mount type=bind,source="$(pwd)"/todo_app,target=/todo_app/todo_app todo-app:test todo_app/tests_e2e
+```
+
 
 To build only the production container, run this command:
 ```
