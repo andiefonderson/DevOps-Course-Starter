@@ -1,5 +1,14 @@
 name: Continuous Integration Pipeline
-on: [push]
+on: 
+  push:
+    paths-ignore:
+      - 'README.md'
+      - 'documentation/**'
+  pull_request:
+    types: [opened, reopened]
+    paths-ignore:
+      - 'README.md'
+      - 'documentation/**'
 
 jobs:
   build:
