@@ -25,14 +25,15 @@ jobs:
 
     - name: Run end-to-end tests
       run: docker run -e TRELLO_KEY=${{ secrets.TRELLO_KEY }} -e TRELLO_TOKEN=${{ secrets.TRELLO_TOKEN }} -e SECRET_KEY=${{ secrets.SECRET_KEY }} --mount type=bind,source="$(pwd)"/todo_app,target=/todo_app/todo_app todo-app:test todo_app/tests_e2e
-
-    - name: Slack - Success notification
-      if:  ${{ success() }} 
+      
+    - name: Send Slack notification
+      if:  ${{ failure() }}     
       id: slack
-      uses: slackapi/slack-github-action@v1.18.0
+      uses: slackapi/slack-github-action@v1.19.0
       with:
         payload: |
-          {
+          if[[ ${{ success() }} ]]; then
+            {
             "text": "Success! The latest GitHub Action build completed successfully.\nClick here to view what's been changed: ${{ github.event.pull_request.html_url || github.event.head_commit.url }}",
             "blocks": [
               {
@@ -44,39 +45,23 @@ jobs:
               }
             ]
           }
-      env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
-      
-    - name: Slack - Failure notification
-      if:  ${{ failure() }}     
-      id: slack
-      uses: slackapi/slack-github-action@v1.19.0
-      with:
-        payload: |
-          {
-            "text": "The latest GitHub Action build failed. \nClick here to view what's been changed: ${{ github.event.pull_request.html_url || github.event.head_commit.url }}",
-            "blocks": [
-              {
-                "type": "section",
-                "text": {
-                  "type": "mrkdwn",
-                  "text": "*The latest GitHub Action build failed*.\n<${{ github.event.pull_request.html_url || github.event.head_commit.url }}|Click here> to view what's been changed."
+          fi
+          if [[ ${{ failure() }} ]]; then
+            {
+              "text": "The latest GitHub Action build failed. \nClick here to view what's been changed: ${{ github.event.pull_request.html_url || github.event.head_commit.url }}",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*The latest GitHub Action build failed*.\n<${{ github.event.pull_request.html_url || github.event.head_commit.url }}|Click here> to view what's been changed."
+                  }
                 }
-              }
-            ]
-          }
-      env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
-
-    - name: Slack - Cancelled notification
-      if:  ${{ cancelled() }}     
-      id: slack
-      uses: slackapi/slack-github-action@v1.19.0
-      with:
-        payload: |
-          {
+              ]
+            }
+          fi
+          if [[ ${{ cancelled() }} ]]; then
+            {
             "text": "The latest GitHub Action build was cancelled. \nClick here to view what's been changed: ${{ github.event.pull_request.html_url || github.event.head_commit.url }}",
             "blocks": [
               {
