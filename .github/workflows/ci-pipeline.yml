@@ -26,8 +26,7 @@ jobs:
     - name: Run end-to-end tests
       run: docker run -e TRELLO_KEY=${{ secrets.TRELLO_KEY }} -e TRELLO_TOKEN=${{ secrets.TRELLO_TOKEN }} -e SECRET_KEY=${{ secrets.SECRET_KEY }} --mount type=bind,source="$(pwd)"/todo_app,target=/todo_app/todo_app todo-app:test todo_app/tests_e2e
       
-    - name: Send Slack notification
-      if:  ${{ failure() }}     
+    - name: Send Slack notification 
       id: slack
       uses: slackapi/slack-github-action@v1.19.0
       with:
