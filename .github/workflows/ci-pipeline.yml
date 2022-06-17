@@ -9,6 +9,8 @@ on:
     paths-ignore:
       - 'README.md'
       - 'documentation/**'
+  schedule:
+    - cron: 0 15 * * *
 
 jobs:
   build:
