@@ -10,7 +10,7 @@ on:
       - 'README.md'
       - 'documentation/**'
   schedule:
-    - cron: 0 15 * * *
+    - cron: 10 15 * * *
 
 jobs:
   build:
@@ -34,7 +34,7 @@ jobs:
       with:
         payload: |
           {
-            "text": "The latest GitHub Action build was a ${{ job.status }}!\nClick here to view what's been changed: ${{ github.event.pull_request.html_url || github.event.head_commit.url }}",
+            "text": "The latest To Do App GitHub Action build was a ${{ job.status }}!\nClick here to view what's been changed: ${{ github.event.pull_request.html_url || github.event.head_commit.url }}",
             "blocks": [
               {
                 "type": "section",
