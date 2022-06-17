@@ -10,7 +10,7 @@ on:
       - 'README.md'
       - 'documentation/**'
   schedule:
-    - cron:  '15 15 * * *' 
+    - cron: '30 13 * * *'
 
 jobs:
   build:
