@@ -31,43 +31,14 @@ jobs:
       uses: slackapi/slack-github-action@v1.19.0
       with:
         payload: |
-          if [[ ${{ success() }} ]]; then
-            {
-            "text": "Success! The latest GitHub Action build completed successfully.\nClick here to view what's been changed: ${{ github.event.pull_request.html_url || github.event.head_commit.url }}",
+          {
+            "text": "The latest GitHub Action build was a ${{ job.status }}!\nClick here to view what's been changed: ${{ github.event.pull_request.html_url || github.event.head_commit.url }}",
             "blocks": [
               {
                 "type": "section",
                 "text": {
                   "type": "mrkdwn",
-                  "text": "*Success!* The latest GitHub Action build completed successfully.\n<${{ github.event.pull_request.html_url || github.event.head_commit.url }}|Click here> to view what's been changed."
-                }
-              }
-            ]
-          }
-          fi
-          if [[ ${{ failure() }} ]]; then
-            {
-              "text": "The latest GitHub Action build failed. \nClick here to view what's been changed: ${{ github.event.pull_request.html_url || github.event.head_commit.url }}",
-              "blocks": [
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "*The latest GitHub Action build failed*.\n<${{ github.event.pull_request.html_url || github.event.head_commit.url }}|Click here> to view what's been changed."
-                  }
-                }
-              ]
-            }
-          fi
-          if [[ ${{ cancelled() }} ]]; then
-            {
-            "text": "The latest GitHub Action build was cancelled. \nClick here to view what's been changed: ${{ github.event.pull_request.html_url || github.event.head_commit.url }}",
-            "blocks": [
-              {
-                "type": "section",
-                "text": {
-                  "type": "mrkdwn",
-                  "text": "The latest GitHub Action build was *cancelled*.\n<${{ github.event.pull_request.html_url || github.event.head_commit.url }}|Click here> to view what's been changed."
+                  "text": "The latest GitHub Action build was a *${{ job.status }}*!\n<${{ github.event.pull_request.html_url || github.event.head_commit.url }}|Click here> to view what's been changed."
                 }
               }
             ]
@@ -75,3 +46,16 @@ jobs:
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+
+  security:
+    name: Run Snyk tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@checkout@v2
+      
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/node@master
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
