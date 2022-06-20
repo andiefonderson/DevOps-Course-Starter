@@ -127,7 +127,7 @@ docker build --target testing --tag todo-app:test .
 To run the testing container, there are two separate commands to ensure the right environment variables are used for the tests.
 For unit and integration tests, run the following command:
 ```
-docker run -p 8080:8080 --mount type=bind,source="$(pwd)"/todo_app,target=/todo_app/todo_app todo-app:test todo_app/tests
+docker run --mount type=bind,source="$(pwd)"/todo_app,target=/todo_app/todo_app todo-app:test todo_app/tests
 ```
 For the end-to-end tests, run the following command:
 ```

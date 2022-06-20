@@ -1,7 +1,7 @@
 name: Continuous Integration Pipeline
 on: 
   schedule:
-    - cron: '*/15 * * * *'
+    - cron: '30 15 * * *'
   push:
     paths-ignore:
       - 'README.md'
