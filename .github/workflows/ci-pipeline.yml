@@ -1,0 +1,62 @@
+name: Continuous Integration Pipeline
+on: 
+  schedule:
+    - cron: '30 15 * * *'
+  push:
+    paths-ignore:
+      - 'README.md'
+      - 'documentation/**'
+  pull_request:
+    types: [opened, reopened]
+    paths-ignore:
+      - 'README.md'
+      - 'documentation/**'
+
+jobs:
+  build:
+    name: Build and run unit and integration tests
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build Docker container
+      run: docker build --target testing --tag todo-app:test .        
+    
+    - name: Run unit and integration tests
+      run: docker run --mount type=bind,source="$(pwd)"/todo_app,target=/todo_app/todo_app todo-app:test todo_app/tests
+
+    - name: Run end-to-end tests
+      run: docker run -e TRELLO_KEY=${{ secrets.TRELLO_KEY }} -e TRELLO_TOKEN=${{ secrets.TRELLO_TOKEN }} -e SECRET_KEY=${{ secrets.SECRET_KEY }} --mount type=bind,source="$(pwd)"/todo_app,target=/todo_app/todo_app todo-app:test todo_app/tests_e2e
+      
+    - name: Send Slack notification 
+      id: slack
+      uses: slackapi/slack-github-action@v1.19.0
+      with:
+        payload: |
+          {
+            "text": "The latest To Do App GitHub Action build was a ${{ job.status }}!\nClick here to view what's been changed: ${{ github.event.pull_request.html_url || github.event.head_commit.url }}",
+            "blocks": [
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "The latest GitHub Action build was a *${{ job.status }}*!\n<${{ github.event.pull_request.html_url || github.event.head_commit.url }}|Click here> to view what's been changed."
+                }
+              }
+            ]
+          }
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+
+  security:
+    name: Run Snyk tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/python-3.8@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
