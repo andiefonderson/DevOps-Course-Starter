@@ -11,7 +11,8 @@ from todo_app import app
 
 def create_board(board_name):
     url = 'https://api.trello.com/1/boards/'
-    api_params = params({ 'name': board_name })
+    id_organisation = os.getenv('TRELLO_IDORGANISATION')
+    api_params = params({ 'idOrganization': id_organisation, 'name': board_name })
     print(api_params)
     response = requests.post(url, api_params).json()
     board_id = response['id']
@@ -53,7 +54,7 @@ def change_list_name(list_id, list_name):
 
 def params(add_params):
     api_key = os.getenv('TRELLO_KEY')
-    api_token = os.getenv('TRELLO_TOKEN')
+    api_token = os.getenv('TRELLO_TOKEN')    
     api_params = { 'key': api_key, 'token': api_token }
     params = api_params.copy()
     params.update(add_params)
