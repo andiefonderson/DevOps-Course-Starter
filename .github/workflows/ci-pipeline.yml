@@ -60,3 +60,14 @@ jobs:
         uses: snyk/actions/python-3.8@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+  publish:
+    name: Build and publish to Docker
+    runs-on: ubuntu-latest
+    if: 
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Test run
+        run: echo "This is when I build a Docker image and publish it to my Docker account like a champ"

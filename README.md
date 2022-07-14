@@ -42,13 +42,16 @@ TRELLO_TOKEN=(enter token here)
 
 You will then need to enter the board ID of a to-do list as well as the IDs of the lists. When setting up the board for the lists, the app has been configured to have 'Not Started, 'In Progress', and 'Complete' lists as the task status. To make the filters work properly, please make sure the list titles match these statuses.
 
-When the board has been set up, you can use the Trello API to find the IDs of the board and lists. The easiest API requests to use for this would be the '[Get All Boards You're a Member To](https://developer.atlassian.com/cloud/trello/guides/rest-api/api-introduction/#getting-our-member-s-boards)' and, using the board ID for it, the '[Get Lists on a Board](https://developer.atlassian.com/cloud/trello/rest/api-group-boards/#api-boards-id-lists-get)'. Once you have gotten them, input their values into the `.env` file as follows:
+When the board has been set up, you can use the Trello API to find the IDs of the board and lists. You can also use the API to get the Organisation ID which is needed for the Selenium end-to-end tests to ensure the test boards are created in the right workspace in Trello. The easiest API requests to use for these would be the '[Get All Boards You're a Member To](https://developer.atlassian.com/cloud/trello/guides/rest-api/api-introduction/#getting-our-member-s-boards)' and, using the board ID for it, the '[Get Lists on a Board](https://developer.atlassian.com/cloud/trello/rest/api-group-boards/#api-boards-id-lists-get)'.
+
+Once you have gotten them, input their values into the `.env` file as follows:
 ```
 TRELLO_BOARD_ID=(enter board ID here)
 
 NOT_STARTED_LIST_ID=(enter 'Not Started' list ID here)
 IN_PROGRESS_LIST_ID=(enter 'In Progress' list ID here)
 COMPLETE_LIST_ID=(enter 'Complete' list ID here)
+TRELLO_IDORGANISATION=(enter the value of 'idOrganization' of your board here)
 ```
 
 The unit tests use pytest. For more information on pytest, visit the [information page on PyPi](https://pypi.org/project/pytest/).
