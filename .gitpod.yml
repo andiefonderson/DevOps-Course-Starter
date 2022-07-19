@@ -13,3 +13,5 @@ tasks:
   - command: | 
       cp .env.template .env
       poetry install
+
+      curl https://cli-assets.heroku.com/install-ubuntu.sh | sh
