@@ -96,7 +96,7 @@ jobs:
 
       - name: Pull and tag Docker image
         run: |
-          $containerName = ${{ secrets.DOCKERHUB_USERNAME }}/todo-app:latest
+          $containerName=${{ secrets.DOCKERHUB_USERNAME }}/todo-app:latest
 
           heroku container:login
           docker pull $containerName
