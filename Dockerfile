@@ -9,8 +9,8 @@ RUN poetry install
 COPY todo_app ./todo_app
 
 FROM base AS production
-EXPOSE 80
-ENTRYPOINT poetry run gunicorn -b 0.0.0.0:80 'todo_app.app:create_app()'
+RUN ${PORT:-80}
+CMD poetry run gunicorn "todo_app.app:create_app()" --bind 0.0.0.0:$PORT
 
 FROM base AS development
 EXPOSE 5000
