@@ -96,11 +96,9 @@ jobs:
 
       - name: Pull and tag Docker image
         run: |
-          $containerName=${{ secrets.DOCKERHUB_USERNAME }}/todo-app:latest
-
           heroku container:login
-          docker pull $containerName
-          docker tag $containerName registry.heroku.com/swish-todoapp/web
+          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/todo-app:latest
+          docker tag ${{ secrets.DOCKERHUB_USERNAME }}/todo-app:latest registry.heroku.com/swish-todoapp/web
 
       - name: Publish to Heroku
         run: |
