@@ -92,14 +92,13 @@ jobs:
         run: |
           heroku login -i
           echo ${{ secrets.HEROKU_USERNAME }}
-          echo ${{ secrets.HEROKU_AUTHTOKEN }}
-
-          heroku container:login
+          echo ${{ secrets.HEROKU_AUTHTOKEN }}          
 
       - name: Pull and tag Docker image
         run: |
           $containerName = ${{ secrets.DOCKERHUB_USERNAME }}/todo-app:latest
 
+          heroku container:login
           docker pull $containerName
           docker tag $containerName registry.heroku.com/swish-todoapp/web
 
