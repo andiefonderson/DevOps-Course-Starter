@@ -61,10 +61,10 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
-  publish:
+  docker:
+    needs: build
     name: Build and publish to Docker
     runs-on: ubuntu-latest
-    if: 
 
     steps:
       - uses: actions/checkout@v2
@@ -79,3 +79,17 @@ jobs:
         run: |
           docker build --target production --tag ${{ secrets.DOCKERHUB_USERNAME }}/todo-app:latest .
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/todo-app:latest
+
+  heroku:
+    needs: docker
+    name: Publish to Heroku
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+    
+      - name: Heroku Login
+        run: |
+          heroku login -i
+          ${{ secrets.HEROKU_USERNAME }}
+          ${{ secrets.HEROKU_AUTHTOKEN }}
