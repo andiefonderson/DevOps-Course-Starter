@@ -91,5 +91,5 @@ jobs:
       - name: Heroku Login
         run: |
           heroku login -i
-          ${{ secrets.HEROKU_USERNAME }}
-          ${{ secrets.HEROKU_AUTHTOKEN }}
+          echo ${{ secrets.HEROKU_USERNAME }}
+          echo ${{ secrets.HEROKU_AUTHTOKEN }}
