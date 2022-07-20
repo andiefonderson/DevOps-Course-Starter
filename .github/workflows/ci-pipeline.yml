@@ -97,4 +97,4 @@ jobs:
       - name: Publish to Heroku
         run: |
           docker push registry.heroku.com/swish-todoapp/web
-          heroku container:release web -a swish-todoapp
+          HEROKU_API_KEY=${{ secrets.HEROKU_AUTHTOKEN }} heroku container:release web -a swish-todoapp
