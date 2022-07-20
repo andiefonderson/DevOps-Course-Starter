@@ -86,17 +86,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-    
-      - name: Heroku Login
-        run: |
-          heroku login -i
-          echo ${{ secrets.HEROKU_USERNAME }}
-          echo ${{ secrets.HEROKU_AUTHTOKEN }}          
+      - uses: actions/checkout@v2         
 
       - name: Pull and tag Docker image
         run: |
-          heroku container:login
+          HEROKU_API_KEY=${{ secrets.HEROKU_AUTHTOKEN }} heroku container:login
           docker pull ${{ secrets.DOCKERHUB_USERNAME }}/todo-app:latest
           docker tag ${{ secrets.DOCKERHUB_USERNAME }}/todo-app:latest registry.heroku.com/swish-todoapp/web
 
