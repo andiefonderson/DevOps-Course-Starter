@@ -81,7 +81,7 @@ jobs:
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/todo-app:latest
 
   heroku:
-    if: startsWith(github.ref_name, 'exercise') || github.ref_name == 'main'
+    if: github.ref_name == 'main'
     needs: docker
     name: Publish to Heroku
     runs-on: ubuntu-latest
