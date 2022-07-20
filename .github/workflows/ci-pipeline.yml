@@ -62,7 +62,7 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
   docker:
-    # needs: build
+    needs: build
     name: Build and publish to Docker
     runs-on: ubuntu-latest
 
@@ -81,7 +81,8 @@ jobs:
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/todo-app:latest
 
   heroku:
-    # needs: docker
+    if: startsWith(github.ref_name, 'exercise') || github.ref_name == 'main'
+    needs: docker
     name: Publish to Heroku
     runs-on: ubuntu-latest
 
@@ -90,11 +91,11 @@ jobs:
 
       - name: Pull and tag Docker image
         run: |
-          HEROKU_API_KEY=${{ secrets.HEROKU_AUTHTOKEN }} heroku container:login
+          HEROKU_API_KEY=${{ secrets.HEROKU_API_KEY }} heroku container:login
           docker pull ${{ secrets.DOCKERHUB_USERNAME }}/todo-app:latest
           docker tag ${{ secrets.DOCKERHUB_USERNAME }}/todo-app:latest registry.heroku.com/swish-todoapp/web
 
       - name: Publish to Heroku
         run: |
           docker push registry.heroku.com/swish-todoapp/web
-          HEROKU_API_KEY=${{ secrets.HEROKU_AUTHTOKEN }} heroku container:release web -a swish-todoapp
+          HEROKU_API_KEY=${{ secrets.HEROKU_API_KEY }} heroku container:release web -a swish-todoapp
